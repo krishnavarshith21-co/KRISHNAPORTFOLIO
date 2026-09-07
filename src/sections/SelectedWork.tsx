@@ -10,119 +10,133 @@ const FeaturedLayout = ({ project }: { project: Project }) => (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
       {/* Left — Project Info */}
       <div className="lg:col-span-5">
-        <p className="text-[10px] font-bold tracking-[0.2em] text-[var(--color-accent)] mb-4 uppercase">
-          FEATURED PROJECT
-        </p>
-        <h3 className="text-[2rem] md:text-[2.5rem] font-black tracking-tight text-[var(--color-text-primary)] mb-3 leading-tight">
-          {project.title}
-        </h3>
-        {project.tagline && (
-          <p className="text-[11px] font-bold tracking-[0.12em] text-[var(--color-text-secondary)] mb-6 uppercase">
-            {project.tagline}
+        <ScrollReveal distance={20}>
+          <p className="text-[10px] font-bold tracking-[0.2em] text-[var(--color-accent)] mb-4 uppercase">
+            {project.badge || "FEATURED PROJECT"}
           </p>
-        )}
+          <h3 className="text-[2rem] md:text-[2.5rem] font-black tracking-tight text-[var(--color-text-primary)] mb-3 leading-tight">
+            {project.title}
+          </h3>
+          {project.tagline && (
+            <p className="text-[11px] font-bold tracking-[0.12em] text-[var(--color-text-secondary)] mb-6 uppercase">
+              {project.tagline}
+            </p>
+          )}
+        </ScrollReveal>
 
-        <p className="text-body text-[15px] leading-relaxed mb-8">
-          {project.description}
-        </p>
+        <ScrollReveal delay={0.08} distance={16}>
+          <p className="text-body text-[15px] leading-relaxed mb-8">
+            {project.description}
+          </p>
+        </ScrollReveal>
 
         {/* Problem */}
         {project.problem && (
-          <div className="mb-8">
-            <p className="text-[10px] font-bold tracking-[0.15em] text-[var(--color-text-muted)] mb-3 uppercase">
-              PROBLEM
-            </p>
-            <p className="text-sm text-[var(--color-text-tertiary)] leading-relaxed">
-              {project.problem}
-            </p>
-          </div>
+          <ScrollReveal delay={0.12} distance={16}>
+            <div className="mb-8">
+              <p className="text-[10px] font-bold tracking-[0.15em] text-[var(--color-text-muted)] mb-3 uppercase">
+                PROBLEM
+              </p>
+              <p className="text-sm text-[var(--color-text-tertiary)] leading-relaxed">
+                {project.problem}
+              </p>
+            </div>
+          </ScrollReveal>
         )}
 
         {/* Technology */}
-        <div className="mb-8">
-          <p className="text-[10px] font-bold tracking-[0.15em] text-[var(--color-text-muted)] mb-3 uppercase">
-            TECHNOLOGY
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {project.tech.map((t) => (
-              <span
-                key={t}
-                className="text-[10px] tracking-[0.08em] text-[var(--color-text-muted)] bg-[var(--color-bg-secondary)] border border-[var(--color-border)] px-3 py-1.5 uppercase"
-              >
-                {t}
-              </span>
-            ))}
+        <ScrollReveal delay={0.16} distance={16}>
+          <div className="mb-8">
+            <p className="text-[10px] font-bold tracking-[0.15em] text-[var(--color-text-muted)] mb-3 uppercase">
+              TECHNOLOGY
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {project.tech.map((t) => (
+                <span
+                  key={t}
+                  className="text-[10px] tracking-[0.08em] text-[var(--color-text-muted)] bg-[var(--color-bg-secondary)] border border-[var(--color-border)] px-3 py-1.5 uppercase"
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
+        </ScrollReveal>
 
-        <div className="flex items-center gap-3">
-          {project.live && (
+        <ScrollReveal delay={0.2} distance={16}>
+          <div className="flex items-center gap-3">
+            {project.live && (
+              <a
+                href={project.live}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--color-text-primary)] text-[var(--color-bg-primary)] text-[10px] font-bold tracking-[0.15em] hover:bg-[var(--color-accent)] hover:text-white transition-colors"
+                data-cursor="VIEW"
+              >
+                LIVE PROJECT →
+              </a>
+            )}
             <a
-              href={project.live}
+              href={project.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--color-text-primary)] text-[var(--color-bg-primary)] text-[10px] font-bold tracking-[0.15em] hover:bg-[var(--color-accent)] hover:text-white transition-colors"
-              data-cursor="VIEW"
+              className="inline-flex items-center gap-2 px-6 py-3 border border-[var(--color-border)] text-[var(--color-text-primary)] text-[10px] font-bold tracking-[0.15em] hover:bg-[var(--color-bg-secondary)] transition-colors"
+              data-cursor="OPEN"
             >
-              LIVE PROJECT →
+              GITHUB ↗
             </a>
-          )}
-          <a
-            href={project.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3 border border-[var(--color-border)] text-[var(--color-text-primary)] text-[10px] font-bold tracking-[0.15em] hover:bg-[var(--color-bg-secondary)] transition-colors"
-            data-cursor="OPEN"
-          >
-            GITHUB ↗
-          </a>
-        </div>
+          </div>
+        </ScrollReveal>
       </div>
 
       {/* Right — What I Built + Implementation */}
       <div className="lg:col-span-6 lg:col-start-7">
         {/* What I Built */}
-        <div className="mb-8">
-          <p className="text-[10px] font-bold tracking-[0.15em] text-[var(--color-text-muted)] mb-4 uppercase">
-            WHAT I BUILT
-          </p>
-          <div className="grid grid-cols-1 gap-[1px] bg-[var(--color-border)]">
-            {project.highlights.map((h, i) => (
-              <div
-                key={h}
-                className="bg-[var(--color-bg-primary)] p-5 flex items-center gap-5"
-              >
-                <span className="text-[10px] font-mono text-[var(--color-text-muted)]">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <p className="text-sm font-medium text-[var(--color-text-secondary)]">
-                  {h}
-                </p>
-              </div>
-            ))}
+        <ScrollReveal delay={0.08} distance={16}>
+          <div className="mb-8">
+            <p className="text-[10px] font-bold tracking-[0.15em] text-[var(--color-text-muted)] mb-4 uppercase">
+              WHAT I BUILT
+            </p>
+            <div className="grid grid-cols-1 gap-[1px] bg-[var(--color-border)]">
+              {project.highlights.map((h, i) => (
+                <div
+                  key={h}
+                  className="bg-[var(--color-bg-primary)] p-5 flex items-center gap-5"
+                >
+                  <span className="text-[10px] font-mono text-[var(--color-text-muted)]">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <p className="text-sm font-medium text-[var(--color-text-secondary)]">
+                    {h}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        </ScrollReveal>
 
         {/* Technical Implementation */}
         {project.implementation && (
-          <div>
-            <p className="text-[10px] font-bold tracking-[0.15em] text-[var(--color-text-muted)] mb-4 uppercase">
-              TECHNICAL IMPLEMENTATION
-            </p>
-            <ul className="space-y-3">
-              {project.implementation.map((item) => (
-                <li
-                  key={item}
-                  className="text-sm text-[var(--color-text-tertiary)] leading-relaxed flex items-start gap-3"
-                >
-                  <span className="text-[var(--color-accent)] mt-1.5 text-[6px]">
-                    ●
-                  </span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
+          <ScrollReveal delay={0.12} distance={16}>
+            <div>
+              <p className="text-[10px] font-bold tracking-[0.15em] text-[var(--color-text-muted)] mb-4 uppercase">
+                TECHNICAL IMPLEMENTATION
+              </p>
+              <ul className="space-y-3">
+                {project.implementation.map((item) => (
+                  <li
+                    key={item}
+                    className="text-sm text-[var(--color-text-tertiary)] leading-relaxed flex items-start gap-3"
+                  >
+                    <span className="text-[var(--color-accent)] mt-1.5 text-[6px]">
+                      ●
+                    </span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </ScrollReveal>
         )}
       </div>
     </div>
@@ -139,33 +153,37 @@ const EditorialLayout = ({ project }: { project: Project }) => (
         </p>
       </div>
       <div className="md:col-span-3">
-        <h3 className="text-lg font-bold tracking-wide text-[var(--color-text-primary)] mb-1">
-          {project.title}
-        </h3>
-        <p className="text-[10px] tracking-[0.1em] text-[var(--color-text-muted)] mb-4 uppercase">
-          {project.category}
-        </p>
-        <div className="flex flex-wrap gap-2 mb-4">
-          {project.tech.map((t) => (
-            <span
-              key={t}
-              className="text-[9px] tracking-[0.08em] text-[var(--color-text-muted)] bg-[var(--color-bg-secondary)] px-2.5 py-1 uppercase"
-            >
-              {t}
-            </span>
-          ))}
-        </div>
+        <ScrollReveal distance={16}>
+          <h3 className="text-lg font-bold tracking-wide text-[var(--color-text-primary)] mb-1">
+            {project.title}
+          </h3>
+          <p className="text-[10px] tracking-[0.1em] text-[var(--color-text-muted)] mb-4 uppercase">
+            {project.category}
+          </p>
+          <div className="flex flex-wrap gap-2 mb-4">
+            {project.tech.map((t) => (
+              <span
+                key={t}
+                className="text-[9px] tracking-[0.08em] text-[var(--color-text-muted)] bg-[var(--color-bg-secondary)] px-2.5 py-1 uppercase"
+              >
+                {t}
+              </span>
+            ))}
+          </div>
+        </ScrollReveal>
       </div>
       <div className="md:col-span-5">
-        <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed mb-3">
-          {project.description}
-        </p>
-        {project.problem && (
-          <p className="text-xs text-[var(--color-text-tertiary)] leading-relaxed">
-            <span className="text-[9px] font-bold tracking-[0.1em] text-[var(--color-text-muted)] uppercase">Problem: </span>
-            {project.problem}
+        <ScrollReveal delay={0.08} distance={16}>
+          <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed mb-3">
+            {project.description}
           </p>
-        )}
+          {project.problem && (
+            <p className="text-xs text-[var(--color-text-tertiary)] leading-relaxed mb-3">
+              <span className="text-[9px] font-bold tracking-[0.1em] text-[var(--color-text-muted)] uppercase">Problem: </span>
+              {project.problem}
+            </p>
+          )}
+        </ScrollReveal>
         {project.implementation && (
           <div className="mt-3">
             <p className="text-[9px] font-bold tracking-[0.1em] text-[var(--color-text-muted)] uppercase mb-2">
@@ -202,38 +220,41 @@ const SplitLayout = ({ project }: { project: Project }) => (
   <div className="py-10 md:py-12 border-t border-[var(--color-border)] group">
     <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
       <div className="md:col-span-5">
-        <p className="text-[10px] font-mono text-[var(--color-text-muted)] mb-2">
-          {project.number}
-        </p>
-        <h3 className="text-xl font-bold tracking-wide text-[var(--color-text-primary)] mb-2">
-          {project.title}
-        </h3>
-        <p className="text-[10px] tracking-[0.1em] text-[var(--color-accent)] mb-4 uppercase">
-          {project.category}
-        </p>
-        <div className="flex flex-wrap gap-2 mb-4">
-          {project.tech.map((t) => (
-            <span
-              key={t}
-              className="text-[9px] tracking-[0.08em] text-[var(--color-text-muted)] bg-[var(--color-bg-secondary)] px-2.5 py-1 uppercase"
-            >
-              {t}
-            </span>
-          ))}
-        </div>
+        <ScrollReveal distance={16}>
+          <p className="text-[10px] font-mono text-[var(--color-text-muted)] mb-2">
+            {project.number}
+          </p>
+          <h3 className="text-xl font-bold tracking-wide text-[var(--color-text-primary)] mb-2">
+            {project.title}
+          </h3>
+          <p className="text-[10px] tracking-[0.1em] text-[var(--color-accent)] mb-4 uppercase">
+            {project.category}
+          </p>
+          <div className="flex flex-wrap gap-2 mb-4">
+            {project.tech.map((t) => (
+              <span
+                key={t}
+                className="text-[9px] tracking-[0.08em] text-[var(--color-text-muted)] bg-[var(--color-bg-secondary)] px-2.5 py-1 uppercase"
+              >
+                {t}
+              </span>
+            ))}
+          </div>
+        </ScrollReveal>
       </div>
       <div className="md:col-span-6 md:col-start-7 flex flex-col justify-between">
-        <div>
-          <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed mb-3">
-            {project.description}
-          </p>
-          {project.problem && (
-            <p className="text-xs text-[var(--color-text-tertiary)] leading-relaxed mb-3">
-              <span className="text-[9px] font-bold tracking-[0.1em] text-[var(--color-text-muted)] uppercase">Problem: </span>
-              {project.problem}
+        <ScrollReveal delay={0.08} distance={16}>
+          <div>
+            <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed mb-3">
+              {project.description}
             </p>
-          )}
-          {project.implementation && (
+            {project.problem && (
+              <p className="text-xs text-[var(--color-text-tertiary)] leading-relaxed mb-3">
+                <span className="text-[9px] font-bold tracking-[0.1em] text-[var(--color-text-muted)] uppercase">Problem: </span>
+                {project.problem}
+              </p>
+            )}
+            {project.implementation && (
             <div className="mb-4">
               <p className="text-[9px] font-bold tracking-[0.1em] text-[var(--color-text-muted)] uppercase mb-2">
                 Technical Implementation
@@ -249,6 +270,7 @@ const SplitLayout = ({ project }: { project: Project }) => (
             </div>
           )}
         </div>
+        </ScrollReveal>
         <a
           href={project.github}
           target="_blank"
@@ -279,14 +301,18 @@ const TechnicalLayout = ({ project }: { project: Project }) => (
         </p>
       </div>
       <div className="md:col-span-3">
-        <h4 className="text-sm font-bold tracking-wide text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors">
-          {project.title}
-        </h4>
+        <ScrollReveal distance={16}>
+          <h4 className="text-sm font-bold tracking-wide text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors">
+            {project.title}
+          </h4>
+        </ScrollReveal>
       </div>
       <div className="md:col-span-5">
-        <p className="text-xs text-[var(--color-text-secondary)]">
-          {project.description}
-        </p>
+        <ScrollReveal delay={0.05} distance={12}>
+          <p className="text-xs text-[var(--color-text-secondary)]">
+            {project.description}
+          </p>
+        </ScrollReveal>
       </div>
       <div className="md:col-span-3 md:text-right">
         <p className="text-[9px] tracking-[0.1em] text-[var(--color-text-muted)] uppercase">

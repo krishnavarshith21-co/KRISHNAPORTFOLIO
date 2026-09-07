@@ -29,7 +29,7 @@ export default function ScrollReveal({
   className = "",
   delay = 0,
   direction = "up",
-  distance = 30,
+  distance = 24,
   duration = 0.8,
   as = "div",
 }: ScrollRevealProps) {

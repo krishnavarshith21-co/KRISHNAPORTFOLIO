@@ -16,9 +16,10 @@ export interface Project {
   highlights: string[];
   implementation?: string[];
   tech: string[];
-  github: string;
+  github?: string;
   live?: string;
   layout: "featured" | "editorial" | "split" | "technical" | "compact";
+  badge?: string;
 }
 
 export interface Credential {
@@ -86,10 +87,29 @@ export const projects: Project[] = [
     github: "https://github.com/krishnavarshith21-co/mitra-vrify",
     live: "https://mitra-vrify.vercel.app",
     layout: "featured",
+    badge: "FEATURED PROJECT",
+  },
+  {
+    id: "shree-vasudha-projects",
+    number: "02",
+    title: "SHREE VASUDHA PROJECTS",
+    category: "Client Work · Real Estate · Web Development",
+    tagline: "PROFESSIONAL DIGITAL EXPERIENCE",
+    description: "Client website project developed as a professional digital experience for Shree Vasudha Projects.",
+    highlights: [
+      "Client project delivery",
+      "Professional web presence",
+      "Digital experience design",
+    ],
+    tech: ["Next.js", "TypeScript", "Tailwind CSS"],
+    github: "https://github.com/krishnavarshith21-co/Shree-Vasudha-projects",
+    live: "https://shree-vasudha-projects.vercel.app",
+    layout: "featured",
+    badge: "CLIENT PROJECT",
   },
   {
     id: "truthlens",
-    number: "02",
+    number: "03",
     title: "TRUTHLENS",
     category: "AI · Content Verification · Trust",
     problem:
@@ -113,7 +133,7 @@ export const projects: Project[] = [
   },
   {
     id: "aura-ai",
-    number: "03",
+    number: "04",
     title: "AURA AI",
     category: "AI · Intelligent Systems",
     problem:
@@ -137,7 +157,7 @@ export const projects: Project[] = [
   },
   {
     id: "audit-flow",
-    number: "04",
+    number: "05",
     title: "AUDIT FLOW",
     category: "Automation · AI · Engineering",
     problem:
@@ -156,7 +176,7 @@ export const projects: Project[] = [
   },
   {
     id: "seo-audit-hub",
-    number: "05",
+    number: "06",
     title: "SEO AUDIT HUB",
     category: "Automation · Web",
     description:
@@ -168,7 +188,7 @@ export const projects: Project[] = [
   },
   {
     id: "hotspot-bypass",
-    number: "06",
+    number: "07",
     title: "HOTSPOT BYPASS",
     category: "Systems · Networking",
     description:

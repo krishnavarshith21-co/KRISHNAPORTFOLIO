@@ -72,6 +72,24 @@ export default function Contact() {
                 </a>
 
                 <a
+                  href="tel:+919121723108"
+                  className="group flex items-center justify-between border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-5 hover:bg-[var(--color-text-primary)] transition-colors duration-200 card-hover"
+                  data-cursor="CALL"
+                >
+                  <div>
+                    <p className="text-[10px] font-bold tracking-[0.2em] text-[var(--color-text-primary)] group-hover:text-[var(--color-bg-primary)] transition-colors">
+                      PHONE
+                    </p>
+                    <p className="text-[11px] font-mono text-[var(--color-text-muted)] group-hover:text-[var(--color-bg-primary)]/70 mt-1 transition-colors">
+                      +91 91217 23108
+                    </p>
+                  </div>
+                  <span className="text-[var(--color-text-muted)] group-hover:text-[var(--color-bg-primary)] transition-colors text-sm">
+                    ↗
+                  </span>
+                </a>
+
+                <a
                   href={socialLinks.github}
                   target="_blank"
                   rel="noopener noreferrer"

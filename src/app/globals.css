@@ -129,8 +129,16 @@ body::before {
 }
 
 .card-hover:hover {
-  transform: translateY(-3px);
+  transform: translateY(-1px);
   border-color: var(--color-border-hover);
+}
+
+.card-hover span {
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), color 0.2s ease;
+}
+
+.card-hover:hover span {
+  transform: translate(2px, -2px);
 }
 
 /* ── Reduced Motion ── */

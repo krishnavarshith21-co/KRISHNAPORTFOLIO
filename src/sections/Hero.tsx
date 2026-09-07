@@ -63,8 +63,8 @@ export default function Hero() {
     hidden: {},
     visible: {
       transition: {
-        staggerChildren: 0.08,
-        delayChildren: 0.1,
+        staggerChildren: 0.1,
+        delayChildren: 0.12,
       },
     },
   };
@@ -72,11 +72,23 @@ export default function Hero() {
   const itemVariants = prefersReducedMotion
     ? { hidden: {}, visible: {} }
     : {
-        hidden: { opacity: 0, y: 24 },
+        hidden: { opacity: 0, y: 30 },
         visible: {
           opacity: 1,
           y: 0,
           transition: { duration: 0.8, ease: EASE },
+        },
+      };
+
+  const nameVariants = prefersReducedMotion
+    ? { hidden: {}, visible: {} }
+    : {
+        hidden: { opacity: 0, y: 40, clipPath: "inset(100% 0% 0% 0%)" },
+        visible: {
+          opacity: 1,
+          y: 0,
+          clipPath: "inset(-20% 0% -20% 0%)",
+          transition: { duration: 0.9, ease: EASE },
         },
       };
 
@@ -123,7 +135,7 @@ export default function Hero() {
             </motion.div>
 
             {/* Name */}
-            <motion.div variants={itemVariants}>
+            <motion.div variants={nameVariants}>
               <h1 className="text-[3.5rem] md:text-[4.5rem] lg:text-[5.5rem] font-black tracking-tight leading-[0.95] text-[var(--color-text-primary)] mb-6 pointer-events-auto">
                 KRISHNA
                 <br />
