@@ -1,41 +1,60 @@
 "use client";
 
-import { useRef, useMemo, useEffect, useState, useCallback } from "react";
+import { useRef, useMemo, useEffect, useState, useCallback, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment } from "@react-three/drei";
 import * as THREE from "three";
 
-/* ─────────────────────────────────────────────────────────────
- * PREMIUM INTELLIGENT SYSTEMS CORE
- * A cinematic 3D visualization of an engineering mind:
- * faceted crystal core, orbital domain nodes, data flow,
- * selective connections, and atmospheric depth.
- * ───────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+ * PREMIUM ENGINEERING CORE VISUALIZATION (TARGET DESIGN)
+ *
+ * Design: High-end technology rendering. Photorealistic dark 
+ * metals, tinted glass, cinematic depth, and precise electric 
+ * blue accents.
+ * 
+ * Key Elements:
+ * - Octahedron Core: Dark tinted glass revealing an inner blue glow.
+ * - Orbital Rings: Highly polished metallic toruses reflecting 
+ *   an environment map.
+ * - Nodes: Small polished metallic spheres and blue emissive dots.
+ * - Lighting: Cinematic key/fill/rim setup + Environment reflections.
+ * - Motion: Extremely slow, luxurious, continuous.
+ * ═══════════════════════════════════════════════════════════════ */
 
 // ── PALETTE ──
-const BLUE_PRIMARY = new THREE.Color("#2a5aff");
-const BLUE_DEEP = new THREE.Color("#1a3a8a");
-const BLUE_SUBTLE = new THREE.Color("#3a6aee");
-const WHITE_SOFT = new THREE.Color("#c8d0e0");
-const WHITE_PURE = new THREE.Color("#ffffff");
+const CORE_GLASS = "#050a12";
+const CORE_WIRE = "#1a3a6a";
+const RING_METAL_1 = "#1f1f24";
+const RING_METAL_2 = "#121218";
+const BLUE_ACCENT = "#2b6eff";
+const BLUE_GLOW = "#1a45d1";
 
-// ── DOMAIN CONFIG ──
-interface DomainConfig {
-  label: string;
+// ── RING CONFIG ──
+interface RingConfig {
   radius: number;
+  tube: number;
   tilt: [number, number, number];
   speed: number;
-  startAngle: number;
-  nodeSize: number;
+  segments: number;
 }
 
-const DOMAINS: DomainConfig[] = [
-  { label: "AI", radius: 2.4, tilt: [1.1, 0.2, 0], speed: 0.06, startAngle: 0, nodeSize: 0.16 },
-  { label: "VISION", radius: 3.0, tilt: [0.7, 0.5, 0.3], speed: -0.045, startAngle: 1.2, nodeSize: 0.14 },
-  { label: "SECURITY", radius: 3.5, tilt: [0.4, -0.4, 0.6], speed: 0.035, startAngle: 2.5, nodeSize: 0.15 },
-  { label: "SOFTWARE", radius: 4.0, tilt: [0.9, 0.7, -0.3], speed: -0.025, startAngle: 4.0, nodeSize: 0.13 },
-  { label: "SYSTEMS", radius: 4.6, tilt: [0.5, -0.6, 0.5], speed: 0.018, startAngle: 5.2, nodeSize: 0.12 },
+// 5 Rings of varying thickness and radii, angled to create a complex orbital sphere
+const RINGS: RingConfig[] = [
+  { radius: 1.8, tube: 0.045, tilt: [1.2, 0.4, 0.1], speed: 0.05, segments: 128 },
+  { radius: 2.2, tube: 0.015, tilt: [-0.3, 0.8, -0.4], speed: -0.04, segments: 128 },
+  { radius: 2.6, tube: 0.035, tilt: [0.6, -0.5, 0.7], speed: 0.03, segments: 96 },
+  { radius: 2.9, tube: 0.008, tilt: [-0.8, -0.2, 0.5], speed: 0.06, segments: 96 },
+  { radius: 3.3, tube: 0.025, tilt: [0.1, 1.1, -0.2], speed: -0.025, segments: 128 },
 ];
+
+// ── SHARED STATE ──
+interface SceneState {
+  scrollProgress: number;
+  mouseX: number;
+  mouseY: number;
+  targetMouseX: number;
+  targetMouseY: number;
+}
 
 // ── REDUCED MOTION ──
 function useReducedMotion(): boolean {
@@ -51,72 +70,74 @@ function useReducedMotion(): boolean {
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * 1. CRYSTAL CORE — faceted icosahedron with glass material
+ * 1. CRYSTAL CORE — faceted dark-glass octahedron
+ *
+ * Uses MeshPhysicalMaterial to create a thick, dark, 
+ * tinted glass effect that reveals the inner blue glow.
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 function CrystalCore({ reducedMotion }: { reducedMotion: boolean }) {
-  const meshRef = useRef<THREE.Mesh>(null!);
-  const haloRef = useRef<THREE.Mesh>(null!);
-  const innerLightRef = useRef<THREE.PointLight>(null!);
+  const groupRef = useRef<THREE.Group>(null!);
+  const outerCoreRef = useRef<THREE.Mesh>(null!);
+  const innerGlowRef = useRef<THREE.PointLight>(null!);
 
-  useFrame((_, delta) => {
-    if (reducedMotion) return;
-    const t = meshRef.current.rotation.y;
-    // Slow rotation
-    meshRef.current.rotation.y += delta * 0.08;
-    meshRef.current.rotation.x += delta * 0.05;
-    meshRef.current.rotation.z += delta * 0.02;
-    // Breathing pulse
-    const breathe = 1 + Math.sin(t * 1.2) * 0.04;
-    meshRef.current.scale.setScalar(breathe);
-    // Halo pulse — slightly different phase
-    if (haloRef.current) {
-      const haloScale = 1.6 + Math.sin(t * 0.8 + 0.5) * 0.08;
-      haloRef.current.scale.setScalar(haloScale);
-      (haloRef.current.material as THREE.MeshBasicMaterial).opacity =
-        0.06 + Math.sin(t * 0.6) * 0.025;
-    }
-    // Inner light oscillation
-    if (innerLightRef.current) {
-      innerLightRef.current.intensity = 0.5 + Math.sin(t * 0.4) * 0.2;
+  useFrame(({ clock }, delta) => {
+    if (!groupRef.current || reducedMotion) return;
+    const t = clock.getElapsedTime();
+
+    // Increased rotation on multiple axes
+    groupRef.current.rotation.y += delta * 0.12;
+    groupRef.current.rotation.x += delta * 0.075;
+    groupRef.current.rotation.z += delta * 0.045;
+
+    // Subtle breathing/pulsing of the inner light
+    if (innerGlowRef.current) {
+      innerGlowRef.current.intensity = 2.5 + Math.sin(t * 0.5) * 0.8;
     }
   });
 
   return (
-    <group>
-      {/* Inner point light */}
+    <group ref={groupRef}>
+      {/* Inner Energy Core */}
+      <mesh scale={0.4}>
+        <icosahedronGeometry args={[1, 2]} />
+        <meshBasicMaterial color={BLUE_ACCENT} />
+      </mesh>
+
+      {/* Internal Light Source illuminating the glass from inside */}
       <pointLight
-        ref={innerLightRef}
-        color={BLUE_PRIMARY}
-        intensity={0.5}
-        distance={6}
+        ref={innerGlowRef}
+        color={BLUE_ACCENT}
+        intensity={3}
+        distance={8}
         decay={2}
       />
 
-      {/* Faceted crystal */}
-      <mesh ref={meshRef}>
-        <icosahedronGeometry args={[0.55, 1]} />
+      {/* Outer Shell: Dark Tinted Glass Octahedron */}
+      <mesh ref={outerCoreRef}>
+        <octahedronGeometry args={[1.1, 0]} />
         <meshPhysicalMaterial
-          color="#1a3a6a"
-          transmission={0.82}
+          color={CORE_GLASS}
+          metalness={0.9}
           roughness={0.05}
-          metalness={0.08}
-          ior={2.33}
-          thickness={0.6}
+          transmission={0.8}    // Glass-like transparency
+          thickness={0.5}       // Refraction thickness
+          ior={1.5}             // Index of refraction
+          clearcoat={1.0}       // Extra glossy layer
+          clearcoatRoughness={0.1}
+          envMapIntensity={1.5} // Strong environment reflections
           transparent
-          opacity={0.92}
-          envMapIntensity={0.6}
-          clearcoat={1}
-          clearcoatRoughness={0.05}
+          opacity={0.95}
         />
       </mesh>
 
-      {/* Soft halo glow */}
-      <mesh ref={haloRef}>
-        <sphereGeometry args={[0.55, 24, 16]} />
+      {/* Structural Wireframe Overlay for sharp facet definition */}
+      <mesh>
+        <octahedronGeometry args={[1.102, 0]} />
         <meshBasicMaterial
-          color={BLUE_SUBTLE}
+          color={CORE_WIRE}
+          wireframe
           transparent
-          opacity={0.07}
+          opacity={0.15}
           depthWrite={false}
           blending={THREE.AdditiveBlending}
         />
@@ -126,104 +147,53 @@ function CrystalCore({ reducedMotion }: { reducedMotion: boolean }) {
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * 2. ORBITAL PATHS — thin torus rings at different tilts
+ * 2. ORBITAL RINGS — polished metallic bands
+ *
+ * Highly reflective toruses using MeshStandardMaterial
+ * relying heavily on the Environment map for metallic feel.
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-function OrbitalPaths() {
-  return (
-    <group>
-      {DOMAINS.map((d, i) => {
-        const opacity = 0.08 - i * 0.008; // Inner brighter, outer dimmer
-        return (
-          <mesh key={d.label} rotation={d.tilt as unknown as THREE.Euler}>
-            <torusGeometry args={[d.radius, 0.002, 8, 128]} />
-            <meshBasicMaterial
-              color={i < 2 ? BLUE_SUBTLE : WHITE_SOFT}
-              transparent
-              opacity={Math.max(opacity, 0.03)}
-              depthWrite={false}
-            />
-          </mesh>
-        );
-      })}
-    </group>
-  );
-}
-
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * 3. DOMAIN NODES — 5 glass spheres orbiting on paths
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-function DomainNodes({ reducedMotion }: { reducedMotion: boolean }) {
-  const groupRefs = useRef<THREE.Group[]>([]);
-  const nodeRefs = useRef<THREE.Mesh[]>([]);
+function OrbitalRings({ reducedMotion }: { reducedMotion: boolean }) {
+  const ringGroupRefs = useRef<THREE.Group[]>([]);
 
   useFrame(({ clock }) => {
     if (reducedMotion) return;
     const t = clock.getElapsedTime();
-    DOMAINS.forEach((d, i) => {
-      const grp = groupRefs.current[i];
-      const node = nodeRefs.current[i];
-      if (!grp || !node) return;
-      // Orbit angle
-      const angle = d.startAngle + t * d.speed;
-      node.position.x = Math.cos(angle) * d.radius;
-      node.position.z = Math.sin(angle) * d.radius;
-      node.position.y = 0;
-      // Gentle node pulse
-      const pulse = 1 + Math.sin(t * 0.5 + i * 1.3) * 0.06;
-      node.scale.setScalar(pulse);
+
+    RINGS.forEach((ring, i) => {
+      const grp = ringGroupRefs.current[i];
+      if (!grp) return;
+      // Rotate the entire ring group around its tilted axis
+      grp.rotation.set(ring.tilt[0], ring.tilt[1] + t * ring.speed, ring.tilt[2]);
     });
   });
 
   return (
     <group>
-      {DOMAINS.map((d, i) => (
+      {RINGS.map((ring, i) => (
         <group
-          key={d.label}
+          key={i}
           ref={(el) => {
-            if (el) groupRefs.current[i] = el;
+            if (el) ringGroupRefs.current[i] = el;
           }}
-          rotation={d.tilt as unknown as THREE.Euler}
         >
-          <mesh
-            ref={(el) => {
-              if (el) nodeRefs.current[i] = el;
-            }}
-            position={[
-              Math.cos(d.startAngle) * d.radius,
-              0,
-              Math.sin(d.startAngle) * d.radius,
-            ]}
-          >
-            <sphereGeometry args={[d.nodeSize, 20, 16]} />
-            <meshPhysicalMaterial
-              color={i < 2 ? "#2a4aaa" : "#3a4a6a"}
-              transmission={0.55}
-              roughness={0.1}
-              metalness={0.05}
-              ior={1.8}
-              thickness={0.3}
-              transparent
-              opacity={0.85}
-              envMapIntensity={0.4}
-              clearcoat={0.8}
-              clearcoatRoughness={0.1}
+          {/* Main Metallic Ring */}
+          <mesh>
+            <torusGeometry args={[ring.radius, ring.tube, 32, ring.segments]} />
+            <meshStandardMaterial
+              color={i % 2 === 0 ? RING_METAL_1 : RING_METAL_2}
+              metalness={1.0}
+              roughness={0.08 + i * 0.02} // Slight variation in polish
+              envMapIntensity={2.0} // Crucial for the metallic look
             />
           </mesh>
-          {/* Tiny glow behind node */}
-          <mesh
-            position={[
-              Math.cos(d.startAngle) * d.radius,
-              0,
-              Math.sin(d.startAngle) * d.radius,
-            ]}
-          >
-            <sphereGeometry args={[d.nodeSize * 1.8, 12, 8]} />
-            <meshBasicMaterial
-              color={BLUE_PRIMARY}
-              transparent
-              opacity={0.04}
-              depthWrite={false}
-              blending={THREE.AdditiveBlending}
+
+          {/* Thin Inner Track (Subtle groove detail) */}
+          <mesh>
+            <torusGeometry args={[ring.radius - ring.tube * 0.4, ring.tube * 0.15, 8, ring.segments]} />
+            <meshStandardMaterial
+              color="#000000"
+              metalness={0.8}
+              roughness={0.5}
             />
           </mesh>
         </group>
@@ -233,428 +203,236 @@ function DomainNodes({ reducedMotion }: { reducedMotion: boolean }) {
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * 4. STRUCTURAL NODES — 15 small nodes via InstancedMesh
+ * 3. ORBITING NODES — small metallic & glowing spheres
+ *
+ * Attached to the rings' orbital paths.
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-const STRUCTURAL_COUNT = 15;
+const NODE_COUNT = 12;
 
-interface StructuralNode {
-  orbit: number; // radius
-  tiltX: number;
-  tiltY: number;
-  tiltZ: number;
-  speed: number;
-  startAngle: number;
-  size: number;
-  depth: number; // z-offset for depth
-}
+function OrbitingNodes({ reducedMotion }: { reducedMotion: boolean }) {
+  const nodeRefs = useRef<THREE.Mesh[]>([]);
 
-function StructuralNodes({ reducedMotion }: { reducedMotion: boolean }) {
-  const meshRef = useRef<THREE.InstancedMesh>(null!);
-  const dummy = useMemo(() => new THREE.Object3D(), []);
-
-  const nodes = useMemo<StructuralNode[]>(() => {
-    const arr: StructuralNode[] = [];
-    const rng = (min: number, max: number) => min + Math.random() * (max - min);
-    for (let i = 0; i < STRUCTURAL_COUNT; i++) {
+  // Pre-calculate random assignments for consistency
+  const nodes = useMemo(() => {
+    const arr = [];
+    for (let i = 0; i < NODE_COUNT; i++) {
       arr.push({
-        orbit: rng(1.8, 5.2),
-        tiltX: rng(-0.8, 1.2),
-        tiltY: rng(-0.8, 0.8),
-        tiltZ: rng(-0.5, 0.5),
-        speed: rng(-0.04, 0.04) * (Math.random() > 0.5 ? 1 : -1),
-        startAngle: rng(0, Math.PI * 2),
-        size: rng(0.025, 0.06),
-        depth: rng(-2, 2),
+        ringIdx: i % RINGS.length,
+        startAngle: (i / NODE_COUNT) * Math.PI * 2,
+        speedMult: 1.2 + (i % 4) * 0.3,
+        size: 0.06 + (i % 3) * 0.02,
       });
     }
     return arr;
   }, []);
 
   useFrame(({ clock }) => {
-    if (!meshRef.current) return;
-    const t = reducedMotion ? 0 : clock.getElapsedTime();
+    if (reducedMotion) return;
+    const t = clock.getElapsedTime();
+
     nodes.forEach((n, i) => {
-      const angle = n.startAngle + t * n.speed;
-      // Position on tilted orbit
-      const x = Math.cos(angle) * n.orbit;
-      const z = Math.sin(angle) * n.orbit;
-      // Apply tilt rotation manually
-      const cosX = Math.cos(n.tiltX);
-      const sinX = Math.sin(n.tiltX);
-      const cosY = Math.cos(n.tiltY);
-      const sinY = Math.sin(n.tiltY);
-      // Rotate around X then Y
-      const y1 = -z * sinX;
-      const z1 = z * cosX;
-      const x2 = x * cosY + z1 * sinY;
-      const y2 = y1;
-      const z2 = -x * sinY + z1 * cosY;
+      const mesh = nodeRefs.current[i];
+      if (!mesh) return;
+      
+      const ring = RINGS[n.ringIdx];
+      const angle = n.startAngle + t * ring.speed * n.speedMult;
 
-      dummy.position.set(x2, y2, z2 + n.depth * 0.3);
-      // Depth-based sizing
-      const depthFactor = THREE.MathUtils.mapLinear(z2 + n.depth * 0.3, -5, 5, 1.3, 0.5);
-      dummy.scale.setScalar(n.size * depthFactor);
-      dummy.updateMatrix();
-      meshRef.current.setMatrixAt(i, dummy.matrix);
+      // Calculate position on the untilted ring
+      const x = Math.cos(angle) * ring.radius;
+      const z = Math.sin(angle) * ring.radius;
+
+      // Apply the ring's current full rotation (tilt + animated rotation)
+      const euler = new THREE.Euler(
+        ring.tilt[0],
+        ring.tilt[1] + t * ring.speed,
+        ring.tilt[2]
+      );
+      const vec = new THREE.Vector3(x, 0, z).applyEuler(euler);
+
+      mesh.position.copy(vec);
     });
-    meshRef.current.instanceMatrix.needsUpdate = true;
   });
 
   return (
-    <instancedMesh ref={meshRef} args={[undefined, undefined, STRUCTURAL_COUNT]}>
-      <octahedronGeometry args={[1, 0]} />
-      <meshPhysicalMaterial
-        color="#3a5a9a"
-        transmission={0.4}
-        roughness={0.15}
-        metalness={0.05}
-        ior={1.6}
-        thickness={0.2}
-        transparent
-        opacity={0.6}
-        envMapIntensity={0.3}
-      />
-    </instancedMesh>
+    <group>
+      {nodes.map((n, i) => (
+        <group key={i}>
+          {/* Solid polished dark metallic node */}
+          <mesh
+            ref={(el) => {
+              if (el) nodeRefs.current[i] = el;
+            }}
+          >
+            <sphereGeometry args={[n.size, 32, 16]} />
+            <meshStandardMaterial
+              color="#555566" // Dark graphite / silver base
+              metalness={1.0}
+              roughness={0.3} // Physically plausible metallic roughness
+              envMapIntensity={2.5}
+            />
+          </mesh>
+        </group>
+      ))}
+    </group>
   );
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * 5. CONNECTIONS — selective thin lines
+ * SCENE — assembles elements, lighting, and interactions
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-function Connections({ reducedMotion }: { reducedMotion: boolean }) {
-  const lineRef = useRef<THREE.LineSegments>(null!);
-
-  // Pre-compute connection endpoints based on domain orbital positions
-  // We connect: core↔AI, core↔SECURITY, AI↔VISION, VISION↔SOFTWARE,
-  // SECURITY↔SYSTEMS, SOFTWARE↔SYSTEMS, core↔SOFTWARE, core↔SYSTEMS
-  const connectionPairs = useMemo(() => [
-    // [from_domain_index (-1=core), to_domain_index]
-    [-1, 0], [-1, 2], [0, 1], [1, 3], [2, 4], [3, 4], [-1, 3], [-1, 4],
-  ], []);
-
-  const positionBuffer = useMemo(
-    () => new Float32Array(connectionPairs.length * 6), // 2 points × 3 coords
-    [connectionPairs]
-  );
-
-  useFrame(({ clock }) => {
-    if (!lineRef.current) return;
-    const t = reducedMotion ? 0 : clock.getElapsedTime();
-
-    connectionPairs.forEach((pair, i) => {
-      // Compute positions of each endpoint
-      const getPos = (idx: number): [number, number, number] => {
-        if (idx === -1) return [0, 0, 0]; // core
-        const d = DOMAINS[idx];
-        const angle = d.startAngle + t * d.speed;
-        const x = Math.cos(angle) * d.radius;
-        const z = Math.sin(angle) * d.radius;
-        // Apply tilt
-        const cosX = Math.cos(d.tilt[0]);
-        const sinX = Math.sin(d.tilt[0]);
-        const cosY = Math.cos(d.tilt[1]);
-        const sinY = Math.sin(d.tilt[1]);
-        const y1 = -z * sinX;
-        const z1 = z * cosX;
-        const x2 = x * cosY + z1 * sinY;
-        const y2 = y1;
-        const z2 = -x * sinY + z1 * cosY;
-        return [x2, y2, z2];
-      };
-
-      const from = getPos(pair[0]);
-      const to = getPos(pair[1]);
-      const offset = i * 6;
-      positionBuffer[offset] = from[0];
-      positionBuffer[offset + 1] = from[1];
-      positionBuffer[offset + 2] = from[2];
-      positionBuffer[offset + 3] = to[0];
-      positionBuffer[offset + 4] = to[1];
-      positionBuffer[offset + 5] = to[2];
-    });
-
-    const geo = lineRef.current.geometry as THREE.BufferGeometry;
-    const attr = geo.getAttribute("position") as THREE.BufferAttribute;
-    attr.array.set(positionBuffer);
-    attr.needsUpdate = true;
-
-    // Subtle opacity pulse
-    const mat = lineRef.current.material as THREE.LineBasicMaterial;
-    mat.opacity = 0.06 + Math.sin(t * 0.3) * 0.02;
-  });
-
-  return (
-    <lineSegments ref={lineRef}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          args={[positionBuffer, 3]}
-        />
-      </bufferGeometry>
-      <lineBasicMaterial
-        color={BLUE_SUBTLE}
-        transparent
-        opacity={0.07}
-        depthWrite={false}
-        blending={THREE.AdditiveBlending}
-      />
-    </lineSegments>
-  );
-}
-
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * 6. DATA FLOW PARTICLES — tiny luminous dots on paths
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-const DATA_PARTICLE_COUNT = 24;
-
-interface DataParticle {
-  domainIndex: number;
-  speedMultiplier: number;
-  offset: number;
-}
-
-function DataFlowParticles({ reducedMotion }: { reducedMotion: boolean }) {
-  const pointsRef = useRef<THREE.Points>(null!);
-
-  const particles = useMemo<DataParticle[]>(() => {
-    const arr: DataParticle[] = [];
-    for (let i = 0; i < DATA_PARTICLE_COUNT; i++) {
-      arr.push({
-        domainIndex: i % DOMAINS.length,
-        speedMultiplier: 1.5 + Math.random() * 2.5,
-        offset: Math.random() * Math.PI * 2,
-      });
-    }
-    return arr;
-  }, []);
-
-  const positions = useMemo(
-    () => new Float32Array(DATA_PARTICLE_COUNT * 3),
-    []
-  );
-
-  useFrame(({ clock }) => {
-    if (!pointsRef.current) return;
-    const t = reducedMotion ? 0 : clock.getElapsedTime();
-
-    particles.forEach((p, i) => {
-      const d = DOMAINS[p.domainIndex];
-      const angle = p.offset + t * d.speed * p.speedMultiplier;
-      const x = Math.cos(angle) * d.radius;
-      const z = Math.sin(angle) * d.radius;
-      // Apply domain tilt
-      const cosX = Math.cos(d.tilt[0]);
-      const sinX = Math.sin(d.tilt[0]);
-      const cosY = Math.cos(d.tilt[1]);
-      const sinY = Math.sin(d.tilt[1]);
-      const y1 = -z * sinX;
-      const z1 = z * cosX;
-      const x2 = x * cosY + z1 * sinY;
-      const y2 = y1;
-      const z2 = -x * sinY + z1 * cosY;
-      positions[i * 3] = x2;
-      positions[i * 3 + 1] = y2;
-      positions[i * 3 + 2] = z2;
-    });
-
-    const geo = pointsRef.current.geometry as THREE.BufferGeometry;
-    const attr = geo.getAttribute("position") as THREE.BufferAttribute;
-    attr.array.set(positions);
-    attr.needsUpdate = true;
-  });
-
-  return (
-    <points ref={pointsRef}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          args={[positions, 3]}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        color={WHITE_PURE}
-        size={0.02}
-        transparent
-        opacity={0.55}
-        sizeAttenuation
-        depthWrite={false}
-        blending={THREE.AdditiveBlending}
-      />
-    </points>
-  );
-}
-
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * 7. ATMOSPHERE PARTICLES — depth-stratified ambient dust
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-const ATMO_COUNT = 80;
-
-function AtmosphereParticles({ reducedMotion }: { reducedMotion: boolean }) {
-  const pointsRef = useRef<THREE.Points>(null!);
-
-  const { positions, sizes } = useMemo(() => {
-    const pos = new Float32Array(ATMO_COUNT * 3);
-    const sz = new Float32Array(ATMO_COUNT);
-    for (let i = 0; i < ATMO_COUNT; i++) {
-      const x = (Math.random() - 0.5) * 16;
-      const y = (Math.random() - 0.5) * 16;
-      const z = (Math.random() - 0.5) * 16;
-      pos[i * 3] = x;
-      pos[i * 3 + 1] = y;
-      pos[i * 3 + 2] = z;
-      // Depth-based size: closer (positive z) = larger
-      const depthNorm = THREE.MathUtils.mapLinear(z, -8, 8, 0.006, 0.025);
-      sz[i] = depthNorm;
-    }
-    return { positions: pos, sizes: sz };
-  }, []);
-
-  useFrame(({ clock }) => {
-    if (!pointsRef.current || reducedMotion) return;
-    const t = clock.getElapsedTime();
-    pointsRef.current.rotation.y = t * 0.006;
-    pointsRef.current.rotation.x = t * 0.003;
-  });
-
-  return (
-    <points ref={pointsRef}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          args={[positions, 3]}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        color={WHITE_SOFT}
-        size={0.015}
-        transparent
-        opacity={0.12}
-        sizeAttenuation
-        depthWrite={false}
-      />
-    </points>
-  );
-}
-
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * 8. MOUSE PARALLAX — smooth scene tilt toward cursor
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-function useMouseParallax(
-  groupRef: React.RefObject<THREE.Group | null>,
-  reducedMotion: boolean
-) {
-  const mouse = useRef({ x: 0, y: 0 });
-  const target = useRef({ x: 0, y: 0 });
-
-  const onPointerMove = useCallback(
-    (e: { clientX: number; clientY: number }) => {
-      if (reducedMotion) return;
-      // Normalize to -1..1
-      target.current.x = (e.clientX / window.innerWidth - 0.5) * 2;
-      target.current.y = (e.clientY / window.innerHeight - 0.5) * 2;
-    },
-    [reducedMotion]
-  );
-
-  useEffect(() => {
-    window.addEventListener("pointermove", onPointerMove);
-    return () => window.removeEventListener("pointermove", onPointerMove);
-  }, [onPointerMove]);
-
-  useFrame(() => {
-    if (!groupRef.current || reducedMotion) return;
-    // Smooth lerp
-    mouse.current.x += (target.current.x - mouse.current.x) * 0.025;
-    mouse.current.y += (target.current.y - mouse.current.y) * 0.025;
-    // Apply subtle rotation
-    groupRef.current.rotation.y = mouse.current.x * 0.08;
-    groupRef.current.rotation.x = mouse.current.y * 0.06;
-  });
-}
-
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * 9. IDLE MOTION — gentle floating when mouse is still
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-function useIdleMotion(
-  groupRef: React.RefObject<THREE.Group | null>,
-  reducedMotion: boolean
-) {
-  useFrame(({ clock }) => {
-    if (!groupRef.current || reducedMotion) return;
-    const t = clock.getElapsedTime();
-    // Very subtle global drift
-    groupRef.current.position.y = Math.sin(t * 0.15) * 0.08;
-    groupRef.current.position.x = Math.sin(t * 0.1 + 1) * 0.04;
-  });
-}
-
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * MAIN SCENE
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-function Scene() {
+function Scene({ state }: { state: React.RefObject<SceneState> }) {
   const mainGroupRef = useRef<THREE.Group>(null!);
   const reducedMotion = useReducedMotion();
 
-  useMouseParallax(mainGroupRef, reducedMotion);
-  useIdleMotion(mainGroupRef, reducedMotion);
+  useFrame(({ clock }) => {
+    if (!mainGroupRef.current) return;
+    const s = state.current;
+
+    if (!reducedMotion) {
+      // Smooth mouse parallax via lerp
+      s.mouseX = THREE.MathUtils.lerp(s.mouseX, s.targetMouseX, 0.02);
+      s.mouseY = THREE.MathUtils.lerp(s.mouseY, s.targetMouseY, 0.02);
+
+      // Apply subtle rotation based on mouse (max ~5 degrees)
+      mainGroupRef.current.rotation.y = s.mouseX * 0.08;
+      mainGroupRef.current.rotation.x = s.mouseY * 0.05;
+
+      // Idle floating motion
+      const t = clock.getElapsedTime();
+      mainGroupRef.current.position.y = Math.sin(t * 0.4) * 0.1;
+      mainGroupRef.current.position.x = Math.sin(t * 0.3) * 0.05;
+    }
+
+    // Subtle scroll-based rotation and downward drift
+    const scroll = s.scrollProgress;
+    if (!reducedMotion && scroll > 0) {
+      mainGroupRef.current.rotation.y += scroll * 0.4;
+      mainGroupRef.current.position.y -= scroll * 1.2;
+    }
+  });
 
   return (
     <>
-      {/* Lighting */}
-      <ambientLight intensity={0.04} />
-      <pointLight
-        color={BLUE_PRIMARY}
-        intensity={0.7}
-        position={[2, 3, 4]}
-        distance={20}
-        decay={2}
-      />
-      <pointLight
-        color={WHITE_PURE}
-        intensity={0.25}
-        position={[-3, -1, 3]}
-        distance={15}
-        decay={2}
-      />
-      {/* Rim light from behind */}
-      <pointLight
-        color={BLUE_DEEP}
-        intensity={0.35}
-        position={[0, 0, -6]}
-        distance={12}
-        decay={2}
+      {/* ── ENVIRONMENT MAPPING ── */}
+      {/* City environment provides high-contrast urban reflections perfect for polished metal */}
+      <Environment preset="city" />
+
+      {/* ── CINEMATIC LIGHTING ── */}
+      <ambientLight intensity={0.15} />
+
+      {/* Soft Key Light from Top Right */}
+      <directionalLight
+        position={[8, 10, 5]}
+        intensity={2.5}
+        color="#ffffff"
       />
 
-      {/* Environment for glass reflections — very low intensity */}
-      <Environment preset="night" environmentIntensity={0.15} />
+      {/* Cool Fill Light from Bottom Left */}
+      <directionalLight
+        position={[-8, -5, 5]}
+        intensity={1.0}
+        color="#a0b0d0"
+      />
 
-      {/* Main group — parallax + idle motion applied here */}
-      <group ref={mainGroupRef}>
+      {/* Strong Blue Rim Light from Behind */}
+      <spotLight
+        position={[0, 5, -10]}
+        intensity={15}
+        angle={0.6}
+        penumbra={0.5}
+        color={BLUE_ACCENT}
+        distance={25}
+      />
+
+      {/* ── SCENE GROUP ── */}
+      <group ref={mainGroupRef} scale={0.82}>
         <CrystalCore reducedMotion={reducedMotion} />
-        <OrbitalPaths />
-        <DomainNodes reducedMotion={reducedMotion} />
-        <StructuralNodes reducedMotion={reducedMotion} />
-        <Connections reducedMotion={reducedMotion} />
-        <DataFlowParticles reducedMotion={reducedMotion} />
-        <AtmosphereParticles reducedMotion={reducedMotion} />
+        <OrbitalRings reducedMotion={reducedMotion} />
+        <OrbitingNodes reducedMotion={reducedMotion} />
       </group>
     </>
   );
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * EXPORTED COMPONENT — same interface, premium internals
+ * EXPORTED COMPONENT
+ *
+ * Container: fills parent (w-full h-full). Parent in Hero.tsx
+ * is absolutely positioned with w-[45%] h-[800px].
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 export default function HeroVisualization() {
+  const [mounted, setMounted] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null!);
+  const stateRef = useRef<SceneState>({
+    scrollProgress: 0,
+    mouseX: 0,
+    mouseY: 0,
+    targetMouseX: 0,
+    targetMouseY: 0,
+  });
+
+  // ── Mount guard ──
+  useEffect(() => {
+    setMounted(true);
+    if (process.env.NODE_ENV === "development") {
+      console.log("[HeroVisualization] mounted");
+    }
+  }, []);
+
+  // ── Mouse tracking (global) ──
+  const onPointerMove = useCallback((e: PointerEvent) => {
+    stateRef.current.targetMouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+    stateRef.current.targetMouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("pointermove", onPointerMove);
+    return () => window.removeEventListener("pointermove", onPointerMove);
+  }, [onPointerMove]);
+
+  // ── Scroll tracking ──
+  useEffect(() => {
+    const onScroll = () => {
+      const scrollY = window.scrollY;
+      const heroHeight = window.innerHeight;
+      stateRef.current.scrollProgress = Math.min(scrollY / heroHeight, 1);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  if (!mounted) {
+    return <div className="w-full h-full" aria-hidden="true" />;
+  }
+
   return (
-    <div className="w-full h-full" aria-hidden="true">
+    <div
+      ref={containerRef}
+      className="w-full h-full"
+      aria-hidden="true"
+    >
       <Canvas
-        camera={{ position: [0, 1.5, 9], fov: 42 }}
+        camera={{ position: [0, 0, 7.5], fov: 50 }}
         dpr={[1, 1.5]}
-        gl={{ antialias: true, alpha: true }}
+        gl={{ 
+          antialias: true, 
+          alpha: true, 
+          powerPreference: "high-performance",
+        }}
         style={{ background: "transparent" }}
+        onCreated={({ gl }) => {
+          // ACESFilmic Tone Mapping is essential for photorealistic metal/glass rendering
+          gl.toneMapping = THREE.ACESFilmicToneMapping;
+          gl.toneMappingExposure = 1.2;
+          if (process.env.NODE_ENV === "development") {
+            const c = gl.domElement;
+            console.log(`[HeroVisualization] WebGL OK — ${c.width}×${c.height}`);
+          }
+        }}
       >
-        <Scene />
+        <Suspense fallback={null}>
+          <Scene state={stateRef} />
+        </Suspense>
       </Canvas>
     </div>
   );
