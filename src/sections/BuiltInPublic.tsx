@@ -1,6 +1,7 @@
 "use client";
 
 import ScrollReveal from "@/components/ScrollReveal";
+import { ParallaxLayer } from "@/components/ScrollParallax";
 import { repositories, socialLinks } from "@/lib/data";
 
 export default function BuiltInPublic() {
@@ -11,21 +12,23 @@ export default function BuiltInPublic() {
           <p className="section-number mb-4">GITHUB</p>
         </ScrollReveal>
 
-        <ScrollReveal delay={0.05}>
-          <h2 className="text-h1 text-[var(--color-text-primary)] mb-12">
-            SELECTED REPOSITORIES
-          </h2>
+        <ScrollReveal delay={0.06}>
+          <ParallaxLayer speed={0.04}>
+            <h2 className="text-h1 text-[var(--color-text-primary)] mb-12">
+              SELECTED REPOSITORIES
+            </h2>
+          </ParallaxLayer>
         </ScrollReveal>
 
         {/* Repository grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[1px] bg-[var(--color-border)] mb-10">
           {repositories.map((repo, i) => (
-            <ScrollReveal key={repo.name} delay={i * 0.04}>
+            <ScrollReveal key={repo.name} delay={Math.min(i * 0.06, 0.24)} distance={24}>
               <a
                 href={repo.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block bg-[var(--color-bg-secondary)] p-5 md:p-6 hover:bg-[var(--color-bg-primary)] transition-colors duration-200 group h-full"
+                className="block bg-[var(--color-bg-secondary)] p-5 md:p-6 hover:bg-[var(--color-bg-primary)] transition-colors duration-200 group h-full card-hover"
                 data-cursor="OPEN"
               >
                 <div className="flex items-center justify-between mb-3">

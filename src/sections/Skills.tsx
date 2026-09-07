@@ -1,6 +1,7 @@
 "use client";
 
 import ScrollReveal from "@/components/ScrollReveal";
+import { ParallaxLayer } from "@/components/ScrollParallax";
 import { capabilities } from "@/lib/data";
 
 export default function Skills() {
@@ -15,16 +16,18 @@ export default function Skills() {
           <p className="section-number mb-4">TECHNICAL CAPABILITIES</p>
         </ScrollReveal>
 
-        <ScrollReveal delay={0.05}>
-          <h2 className="text-h1 text-[var(--color-text-primary)] mb-12">
-            TECHNOLOGIES
-          </h2>
+        <ScrollReveal delay={0.06}>
+          <ParallaxLayer speed={0.04}>
+            <h2 className="text-h1 text-[var(--color-text-primary)] mb-12">
+              TECHNOLOGIES
+            </h2>
+          </ParallaxLayer>
         </ScrollReveal>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[1px] bg-[var(--color-border)]">
           {capabilities.map((category, i) => (
-            <ScrollReveal key={category.title} delay={0.1 + i * 0.06}>
-              <div className="bg-[var(--color-bg-primary)] h-full">
+            <ScrollReveal key={category.title} delay={0.1 + i * 0.08} distance={24}>
+              <div className="bg-[var(--color-bg-primary)] h-full card-hover">
                 {/* Category header */}
                 <div className="p-5 md:p-6 bg-[var(--color-bg-secondary)]">
                   <p className="text-xs font-bold tracking-[0.2em] text-[var(--color-text-primary)]">

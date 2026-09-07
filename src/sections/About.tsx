@@ -1,6 +1,7 @@
 "use client";
 
 import ScrollReveal from "@/components/ScrollReveal";
+import { ParallaxLayer } from "@/components/ScrollParallax";
 
 const focusAreas = [
   "Artificial Intelligence",
@@ -23,15 +24,17 @@ export default function About() {
               <p className="section-number mb-6">ABOUT</p>
             </ScrollReveal>
 
-            <ScrollReveal delay={0.05}>
-              <h2 className="text-h1 text-[var(--color-text-primary)] mb-12">
-                ENGINEER. BUILDER.
-                <br />
-                STUDENT.
-              </h2>
+            <ScrollReveal delay={0.06}>
+              <ParallaxLayer speed={0.04}>
+                <h2 className="text-h1 text-[var(--color-text-primary)] mb-12">
+                  ENGINEER. BUILDER.
+                  <br />
+                  STUDENT.
+                </h2>
+              </ParallaxLayer>
             </ScrollReveal>
 
-            <ScrollReveal delay={0.1}>
+            <ScrollReveal delay={0.12} distance={24}>
               <p className="text-lg text-[var(--color-text-secondary)] leading-relaxed mb-8 max-w-2xl">
                 I&apos;m Krishna Varshith, a student engineer interested in
                 artificial intelligence, cybersecurity, software systems and
@@ -39,7 +42,7 @@ export default function About() {
               </p>
             </ScrollReveal>
 
-            <ScrollReveal delay={0.15}>
+            <ScrollReveal delay={0.18} distance={24}>
               <p className="text-body max-w-2xl">
                 My work focuses on understanding difficult technical problems,
                 building working systems and continuously learning through
@@ -50,7 +53,7 @@ export default function About() {
 
           {/* Right — Focus Areas Panel */}
           <div className="lg:col-span-4 lg:col-start-9">
-            <ScrollReveal delay={0.2}>
+            <ScrollReveal delay={0.24} distance={24}>
               <div className="border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-8">
                 <p className="text-[10px] font-bold tracking-[0.2em] text-[var(--color-text-primary)] mb-8 uppercase">
                   Focus Areas

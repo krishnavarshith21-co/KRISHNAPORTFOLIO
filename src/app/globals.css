@@ -121,6 +121,18 @@ body::before {
   width: 100%;
 }
 
+/* ── Premium Card Hover ── */
+.card-hover {
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.card-hover:hover {
+  transform: translateY(-3px);
+  border-color: var(--color-border-hover);
+}
+
 /* ── Reduced Motion ── */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -130,6 +142,10 @@ body::before {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .card-hover:hover {
+    transform: none;
   }
 }
 

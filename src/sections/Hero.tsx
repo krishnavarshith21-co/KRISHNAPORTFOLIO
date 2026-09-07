@@ -1,15 +1,95 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { motion, useReducedMotion } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 import { socialLinks } from "@/lib/data";
 
 const HeroVisualization = dynamic(
   () => import("@/components/HeroVisualization"),
-  { ssr: false }
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-full flex items-center justify-center" aria-hidden="true">
+        {/* Subtle placeholder while JS chunk loads */}
+        <div className="relative" style={{ width: 260, height: 260 }}>
+          <div
+            className="absolute rounded-full"
+            style={{
+              width: 40,
+              height: 40,
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              background: "radial-gradient(circle, rgba(59,130,246,0.2) 0%, transparent 70%)",
+            }}
+          />
+          <div
+            className="absolute rounded-full border"
+            style={{
+              width: 100,
+              height: 100,
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%) rotateX(68deg)",
+              borderColor: "rgba(59,130,246,0.06)",
+            }}
+          />
+          <div
+            className="absolute rounded-full border"
+            style={{
+              width: 160,
+              height: 160,
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%) rotateX(68deg) rotateZ(30deg)",
+              borderColor: "rgba(59,130,246,0.04)",
+            }}
+          />
+        </div>
+      </div>
+    ),
+  }
 );
 
+/* Cinematic easing */
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+
 export default function Hero() {
+  const prefersReducedMotion = useReducedMotion();
+
+  /* Hero entrance variants — staggered from top */
+  const containerVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.08,
+        delayChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = prefersReducedMotion
+    ? { hidden: {}, visible: {} }
+    : {
+        hidden: { opacity: 0, y: 24 },
+        visible: {
+          opacity: 1,
+          y: 0,
+          transition: { duration: 0.8, ease: EASE },
+        },
+      };
+
+  const vizVariants = prefersReducedMotion
+    ? { hidden: {}, visible: {} }
+    : {
+        hidden: { opacity: 0 },
+        visible: {
+          opacity: 1,
+          transition: { duration: 1.2, delay: 0.3, ease: EASE },
+        },
+      };
+
   return (
     <section
       className="relative min-h-screen flex items-center overflow-hidden bg-[#050505]"
@@ -19,30 +99,40 @@ export default function Hero() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center w-full relative">
           
           {/* Right — 3D Visualization (Strict boundaries to prevent overlap) */}
-          <div className="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 w-[45%] max-w-[650px] h-[800px] z-0 pointer-events-auto items-center justify-center">
+          <motion.div
+            variants={vizVariants}
+            initial="hidden"
+            animate="visible"
+            className="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 w-[45%] max-w-[650px] h-[800px] z-0 pointer-events-auto items-center justify-center"
+          >
             <HeroVisualization />
-          </div>
+          </motion.div>
 
           {/* Left — Identity + CTA (Foreground) */}
-          <div className="lg:col-span-6 flex flex-col z-10 pointer-events-none">
+          <motion.div
+            className="lg:col-span-6 flex flex-col z-10 pointer-events-none"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
             {/* Hello, I'm */}
-            <ScrollReveal>
+            <motion.div variants={itemVariants}>
               <div className="text-[10px] md:text-[11px] font-semibold tracking-[0.3em] text-[var(--color-text-muted)] uppercase mb-4 pointer-events-auto">
                 Hello, I'm
               </div>
-            </ScrollReveal>
+            </motion.div>
 
             {/* Name */}
-            <ScrollReveal delay={0.05}>
+            <motion.div variants={itemVariants}>
               <h1 className="text-[3.5rem] md:text-[4.5rem] lg:text-[5.5rem] font-black tracking-tight leading-[0.95] text-[var(--color-text-primary)] mb-6 pointer-events-auto">
                 KRISHNA
                 <br />
                 VARSHITH
               </h1>
-            </ScrollReveal>
+            </motion.div>
 
             {/* Positioning tags */}
-            <ScrollReveal delay={0.1}>
+            <motion.div variants={itemVariants}>
               <div className="flex flex-wrap items-center gap-3 mb-8 pointer-events-auto">
                 <span className="text-[10px] md:text-[11px] font-bold tracking-[0.2em] text-[#4a78d0] uppercase">
                   AI Engineer
@@ -56,17 +146,17 @@ export default function Hero() {
                   Cybersecurity Builder
                 </span>
               </div>
-            </ScrollReveal>
+            </motion.div>
 
             {/* Supporting copy */}
-            <ScrollReveal delay={0.15}>
+            <motion.div variants={itemVariants}>
               <p className="text-base md:text-lg text-[var(--color-text-secondary)] leading-relaxed max-w-md mb-12 pointer-events-auto">
                 Student engineer building intelligent systems, security-focused software and practical AI applications.
               </p>
-            </ScrollReveal>
+            </motion.div>
 
             {/* CTAs */}
-            <ScrollReveal delay={0.2}>
+            <motion.div variants={itemVariants}>
               <div className="flex flex-wrap items-center gap-4 pointer-events-auto">
                 <a
                   href="#work"
@@ -99,13 +189,18 @@ export default function Hero() {
                   LINKEDIN ↗
                 </a>
               </div>
-            </ScrollReveal>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </div>
 
       {/* Bottom Layout Elements */}
-      <div className="absolute bottom-12 left-0 right-0 container-grid flex justify-between items-end z-20 pointer-events-none hidden md:flex">
+      <motion.div
+        initial={prefersReducedMotion ? {} : { opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 0.6, ease: EASE }}
+        className="absolute bottom-12 left-0 right-0 container-grid flex justify-between items-end z-20 pointer-events-none hidden md:flex"
+      >
         {/* Left: Scroll to explore */}
         <div className="flex items-center gap-4">
           <div className="w-[1px] h-12 bg-white/20"></div>
@@ -121,7 +216,7 @@ export default function Hero() {
           </span>
           <div className="h-[1px] w-24 bg-white/20"></div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

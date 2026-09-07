@@ -24,7 +24,7 @@ export interface Project {
 export interface Credential {
   id: string;
   date: string;
-  category: "HACKATHON" | "MASTERCLASS" | "WORKSHOP" | "CERTIFICATE";
+  category: "HACKATHON" | "MASTERCLASS" | "WORKSHOP" | "CERTIFICATE" | "ACHIEVEMENT";
   title: string;
   organisation: string;
   certificateImage?: string;
@@ -32,7 +32,7 @@ export interface Credential {
 
 export interface TimelineEntry {
   year: string;
-  type: "BUILDING" | "HACKATHON" | "LEARNING" | "WORKSHOP";
+  type: "BUILDING" | "HACKATHON" | "LEARNING" | "WORKSHOP" | "ACHIEVEMENT";
   title: string;
   description: string;
   evidence?: { label: string; credentialId?: string };
@@ -246,6 +246,13 @@ export const education: EducationGroup[] = [
 export const timeline: TimelineEntry[] = [
   {
     year: "2026",
+    type: "ACHIEVEMENT",
+    title: "Maker Conclave",
+    description: "Presented a technology project at Maker Conclave, demonstrating practical engineering, innovation, and problem-solving.",
+    evidence: { label: "VIEW DETAILS →", credentialId: "maker-conclave" },
+  },
+  {
+    year: "2026",
     type: "BUILDING",
     title: "Mitra Verify — Product Development",
     description:
@@ -312,6 +319,7 @@ export const timeline: TimelineEntry[] = [
 // ── CREDENTIALS ──
 
 export const credentials: Credential[] = [
+  { id: "maker-conclave", date: "2026", category: "ACHIEVEMENT", title: "Maker Conclave", organisation: "Maker Conclave" },
   { id: "adobe-hackathon", date: "2026", category: "HACKATHON", title: "Adobe University Hackathon", organisation: "Adobe", certificateImage: "/certificates/adobe-hackathon.png" },
   { id: "takeover-hackathon", date: "2026", category: "HACKATHON", title: "Takeover Hackathon", organisation: "NIAT", certificateImage: "/certificates/takeover-hackathon.jpg" },
   { id: "openai-buildathon", date: "2025", category: "WORKSHOP", title: "OpenAI Academy × NxtWave Regional Buildathon — Telangana", organisation: "OpenAI Academy / NxtWave", certificateImage: "/certificates/openai-buildathon.png" },

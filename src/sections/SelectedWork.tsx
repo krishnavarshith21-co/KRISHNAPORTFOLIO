@@ -1,6 +1,7 @@
 "use client";
 
 import ScrollReveal from "@/components/ScrollReveal";
+import { ParallaxLayer } from "@/components/ScrollParallax";
 import { projects, Project } from "@/lib/data";
 
 /* ── FEATURED LAYOUT (Mitra Verify) ── */
@@ -354,13 +355,15 @@ export default function SelectedWork() {
           <p className="section-number mb-4">SELECTED WORK</p>
         </ScrollReveal>
 
-        <ScrollReveal delay={0.05}>
-          <h2 className="text-h1 text-[var(--color-text-primary)] mb-4">
-            SELECTED WORK
-          </h2>
+        <ScrollReveal delay={0.06}>
+          <ParallaxLayer speed={0.04}>
+            <h2 className="text-h1 text-[var(--color-text-primary)] mb-4">
+              SELECTED WORK
+            </h2>
+          </ParallaxLayer>
         </ScrollReveal>
 
-        <ScrollReveal delay={0.1}>
+        <ScrollReveal delay={0.12} distance={24}>
           <p className="text-body text-lg mb-12 max-w-xl">
             Systems, applications and experiments I&apos;ve built.
           </p>
@@ -368,7 +371,7 @@ export default function SelectedWork() {
 
         {/* Render all projects with their respective layouts */}
         {projects.map((project, i) => (
-          <ScrollReveal key={project.id} delay={i * 0.05}>
+          <ScrollReveal key={project.id} delay={Math.min(i * 0.06, 0.3)} distance={24}>
             <ProjectLayout project={project} />
           </ScrollReveal>
         ))}

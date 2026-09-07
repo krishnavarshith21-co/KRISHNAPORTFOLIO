@@ -1,6 +1,7 @@
 "use client";
 
 import ScrollReveal from "@/components/ScrollReveal";
+import { ParallaxLayer } from "@/components/ScrollParallax";
 import { education } from "@/lib/data";
 
 export default function Education() {
@@ -11,17 +12,19 @@ export default function Education() {
           <p className="section-number mb-4">EDUCATION</p>
         </ScrollReveal>
 
-        <ScrollReveal delay={0.05}>
-          <h2 className="text-h1 text-[var(--color-text-primary)] mb-16">
-            ACADEMIC FOUNDATION
-          </h2>
+        <ScrollReveal delay={0.06}>
+          <ParallaxLayer speed={0.04}>
+            <h2 className="text-h1 text-[var(--color-text-primary)] mb-16">
+              ACADEMIC FOUNDATION
+            </h2>
+          </ParallaxLayer>
         </ScrollReveal>
 
         {/* Dense matrix */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-[1px] bg-[var(--color-border)]">
           {education.map((group, i) => (
-            <ScrollReveal key={group.title} delay={0.1 + i * 0.06}>
-              <div className="bg-[var(--color-bg-primary)] h-full">
+            <ScrollReveal key={group.title} delay={0.1 + i * 0.08} distance={24}>
+              <div className="bg-[var(--color-bg-primary)] h-full card-hover">
                 <div className="p-5 md:p-6 bg-[var(--color-bg-secondary)]">
                   <p className="text-xs font-bold tracking-[0.2em] text-[var(--color-text-primary)]">
                     {group.title}

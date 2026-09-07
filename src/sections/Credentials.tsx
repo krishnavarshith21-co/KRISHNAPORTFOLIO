@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
+import { ParallaxLayer } from "@/components/ScrollParallax";
 import { credentials } from "@/lib/data";
 
 export default function Credentials() {
@@ -35,7 +36,7 @@ export default function Credentials() {
     };
   }, [selectedId, close, goNext, goPrev]);
 
-  const categories = ["HACKATHON", "MASTERCLASS", "WORKSHOP", "CERTIFICATE"] as const;
+  const categories = ["ACHIEVEMENT", "HACKATHON", "MASTERCLASS", "WORKSHOP", "CERTIFICATE"] as const;
 
   const handleImgError = (id: string) => {
     setImgError((prev) => new Set(prev).add(id));
@@ -48,14 +49,16 @@ export default function Credentials() {
           <p className="section-number mb-4">CREDENTIALS</p>
         </ScrollReveal>
 
-        <ScrollReveal delay={0.05}>
-          <h2 className="text-h1 text-[var(--color-text-primary)] mb-6">
-            CREDENTIALS &amp; LEARNING
-          </h2>
+        <ScrollReveal delay={0.06}>
+          <ParallaxLayer speed={0.04}>
+            <h2 className="text-h1 text-[var(--color-text-primary)] mb-6">
+              CREDENTIALS &amp; LEARNING
+            </h2>
+          </ParallaxLayer>
         </ScrollReveal>
 
         {/* Category counts */}
-        <ScrollReveal delay={0.1}>
+        <ScrollReveal delay={0.12} distance={20}>
           <div className="flex flex-wrap gap-6 mb-10">
             {categories.map((cat) => {
               const count = credentials.filter((c) => c.category === cat).length;
@@ -73,29 +76,46 @@ export default function Credentials() {
 
         {/* Credential rows */}
         <div>
-          {credentials.map((cred, i) => (
-            <ScrollReveal key={cred.id} delay={i * 0.03}>
-              <button
-                onClick={() => setSelectedId(cred.id)}
-                className="w-full text-left grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-4 py-5 border-t border-[var(--color-border)] hover:bg-[var(--color-bg-secondary)] transition-colors duration-200 px-4 -mx-4 group"
-                data-cursor="VIEW"
-                aria-label={`View certificate: ${cred.title}`}
-              >
-                <p className="text-xs font-mono text-[var(--color-text-muted)] md:col-span-1">
-                  {cred.date}
-                </p>
-                <p className="text-[10px] font-bold tracking-[0.12em] text-[var(--color-accent)] md:col-span-2 uppercase">
-                  {cred.category}
-                </p>
-                <p className="text-sm text-[var(--color-text-primary)] md:col-span-6 group-hover:text-[var(--color-accent)] transition-colors">
-                  {cred.title}
-                </p>
-                <p className="text-xs text-[var(--color-text-muted)] md:col-span-3 md:text-right">
-                  {cred.organisation}
-                </p>
-              </button>
-            </ScrollReveal>
-          ))}
+          {credentials.map((cred, i) => {
+            const isAchievement = cred.category === "ACHIEVEMENT";
+            return (
+              <ScrollReveal key={cred.id} delay={Math.min(i * 0.03, 0.24)} distance={16}>
+                <button
+                  onClick={() => setSelectedId(cred.id)}
+                  className={`w-full text-left grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-4 py-5 border-t border-[var(--color-border)] transition-all duration-300 px-4 -mx-4 group relative overflow-hidden ${
+                    isAchievement 
+                      ? "hover:bg-[var(--color-bg-secondary)] hover:border-[var(--color-accent)]/30" 
+                      : "hover:bg-[var(--color-bg-secondary)]"
+                  }`}
+                  data-cursor="VIEW"
+                  aria-label={`View certificate: ${cred.title}`}
+                >
+                  {isAchievement && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-accent)]/0 via-[var(--color-accent)]/[0.03] to-[var(--color-accent)]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                  )}
+                  <p className={`text-xs font-mono md:col-span-1 ${isAchievement ? "text-[var(--color-accent)]/80" : "text-[var(--color-text-muted)]"}`}>
+                    {cred.date}
+                  </p>
+                  <p className={`text-[10px] font-bold tracking-[0.12em] md:col-span-2 uppercase ${isAchievement ? "text-[var(--color-accent)] drop-shadow-[0_0_8px_rgba(var(--color-accent-rgb),0.3)]" : "text-[var(--color-accent)]"}`}>
+                    {cred.category}
+                  </p>
+                  <div className="md:col-span-6 flex items-center justify-between">
+                    <p className={`text-sm transition-colors ${isAchievement ? "text-white font-medium group-hover:text-[var(--color-accent)]" : "text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)]"}`}>
+                      {cred.title}
+                    </p>
+                    {isAchievement && (
+                      <span className="text-[9px] tracking-widest text-[var(--color-accent)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pr-4">
+                        VIEW DETAILS ↗
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-[var(--color-text-muted)] md:col-span-3 md:text-right flex items-center md:justify-end">
+                    {cred.organisation}
+                  </p>
+                </button>
+              </ScrollReveal>
+            );
+          })}
           <div className="border-t border-[var(--color-border)]" />
         </div>
       </div>
