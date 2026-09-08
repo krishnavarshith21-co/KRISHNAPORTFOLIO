@@ -47,6 +47,13 @@ export default function CinematicIntro({
       setShouldSkip(true);
       return;
     }
+
+    // Skip intro if navigating directly to a section hash or another path
+    if (typeof window !== "undefined" && (window.location.hash.length > 1 || window.location.pathname !== "/")) {
+      setShouldSkip(true);
+      return;
+    }
+
     try {
       if (sessionStorage.getItem(SESSION_KEY) === "true") {
         setShouldSkip(true);
