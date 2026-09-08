@@ -2,7 +2,6 @@
 
 import dynamic from "next/dynamic";
 import { motion, useReducedMotion } from "framer-motion";
-import ScrollReveal from "@/components/ScrollReveal";
 import { socialLinks } from "@/lib/data";
 
 const HeroVisualization = dynamic(
@@ -53,18 +52,26 @@ const HeroVisualization = dynamic(
 );
 
 /* Cinematic easing */
-const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
-export default function Hero() {
+interface HeroProps {
+  /** When true, hero entrance animations begin. Controlled by CinematicIntro. */
+  introReady?: boolean;
+}
+
+export default function Hero({ introReady = true }: HeroProps) {
   const prefersReducedMotion = useReducedMotion();
 
-  /* Hero entrance variants — staggered from top */
+  /* Determine if animations should play */
+  const shouldAnimate = introReady;
+
+  /* Hero entrance variants — cinematic stagger */
   const containerVariants = {
     hidden: {},
     visible: {
       transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.12,
+        staggerChildren: 0.2,
+        delayChildren: 0.0,
       },
     },
   };
@@ -72,33 +79,36 @@ export default function Hero() {
   const itemVariants = prefersReducedMotion
     ? { hidden: {}, visible: {} }
     : {
-        hidden: { opacity: 0, y: 30 },
+        hidden: { opacity: 0, y: 20, filter: "blur(10px)" },
         visible: {
           opacity: 1,
           y: 0,
-          transition: { duration: 0.8, ease: EASE },
+          filter: "blur(0px)",
+          transition: { duration: 1.0, ease: EASE },
         },
       };
 
   const nameVariants = prefersReducedMotion
     ? { hidden: {}, visible: {} }
     : {
-        hidden: { opacity: 0, y: 40, clipPath: "inset(100% 0% 0% 0%)" },
+        hidden: { opacity: 0, y: 28, filter: "blur(8px)" },
         visible: {
           opacity: 1,
           y: 0,
-          clipPath: "inset(-20% 0% -20% 0%)",
-          transition: { duration: 0.9, ease: EASE },
+          filter: "blur(0px)",
+          transition: { duration: 1.1, ease: EASE },
         },
       };
 
   const vizVariants = prefersReducedMotion
     ? { hidden: {}, visible: {} }
     : {
-        hidden: { opacity: 0 },
+        hidden: { opacity: 0, scale: 0.96, y: 14 },
         visible: {
           opacity: 1,
-          transition: { duration: 1.2, delay: 0.3, ease: EASE },
+          scale: 1,
+          y: 0,
+          transition: { duration: 1.6, delay: 0.4, ease: EASE },
         },
       };
 
@@ -114,7 +124,7 @@ export default function Hero() {
           <motion.div
             variants={vizVariants}
             initial="hidden"
-            animate="visible"
+            animate={shouldAnimate ? "visible" : "hidden"}
             className="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 w-[45%] max-w-[650px] h-[800px] z-0 pointer-events-auto items-center justify-center"
           >
             <HeroVisualization />
@@ -125,7 +135,7 @@ export default function Hero() {
             className="lg:col-span-6 flex flex-col z-10 pointer-events-none"
             variants={containerVariants}
             initial="hidden"
-            animate="visible"
+            animate={shouldAnimate ? "visible" : "hidden"}
           >
             {/* Hello, I'm */}
             <motion.div variants={itemVariants}>
@@ -209,8 +219,8 @@ export default function Hero() {
       {/* Bottom Layout Elements */}
       <motion.div
         initial={prefersReducedMotion ? {} : { opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 0.6, ease: EASE }}
+        animate={shouldAnimate ? { opacity: 1 } : { opacity: 0 }}
+        transition={{ duration: 1.2, delay: 1.0, ease: EASE }}
         className="absolute bottom-12 left-0 right-0 container-grid flex justify-between items-end z-20 pointer-events-none hidden md:flex"
       >
         {/* Left: Scroll to explore */}
@@ -232,3 +242,4 @@ export default function Hero() {
     </section>
   );
 }
+

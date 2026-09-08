@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useCallback } from "react";
 import dynamic from "next/dynamic";
 import Hero from "@/sections/Hero";
 import About from "@/sections/About";
@@ -17,14 +18,25 @@ const Navbar = dynamic(() => import("@/components/Navbar"), { ssr: false });
 const CustomCursor = dynamic(() => import("@/components/CustomCursor"), {
   ssr: false,
 });
+const CinematicIntro = dynamic(
+  () => import("@/components/CinematicIntro"),
+  { ssr: false }
+);
 
 export default function Home() {
+  const [introReady, setIntroReady] = useState(false);
+
+  const handleHeroReveal = useCallback(() => {
+    setIntroReady(true);
+  }, []);
+
   return (
     <>
+      <CinematicIntro onHeroReveal={handleHeroReveal} />
       <CustomCursor />
       <Navbar />
       <main>
-        <Hero />
+        <Hero introReady={introReady} />
         <About />
         <SelectedWork />
         <Skills />

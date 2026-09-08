@@ -311,3 +311,204 @@ body::before {
 .link-underline:hover::after {
   width: 100%;
 }
+
+/* ============================================================
+   CINEMATIC INTRO v2 — Premium Opening Sequence
+   ============================================================ */
+
+.ci-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  will-change: opacity;
+}
+
+.ci-bg {
+  position: absolute;
+  inset: 0;
+  background: #030305;
+}
+
+/* ── Ambient light — central elliptical glow ── */
+.ci-ambient {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(900px, 90vw);
+  height: min(500px, 60vh);
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(74, 124, 255, 0.06) 0%,
+    rgba(42, 31, 94, 0.04) 30%,
+    transparent 65%
+  );
+  border-radius: 50%;
+  pointer-events: none;
+  will-change: opacity;
+}
+
+/* ── Secondary ambient — soft top-down fill ── */
+.ci-ambient-top {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(700px, 80vw);
+  height: 40vh;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    ellipse at top center,
+    rgba(245, 240, 235, 0.015) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  will-change: opacity;
+}
+
+/* ── KV Monogram ── */
+.ci-kv {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  will-change: opacity, transform;
+  z-index: 2;
+}
+
+.ci-kv-text {
+  font-family: var(--font-sans);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 200;
+  letter-spacing: 0.5em;
+  color: rgba(245, 240, 235, 0.88);
+  user-select: none;
+  text-indent: 0.5em; /* Compensate trailing letter-spacing */
+  text-shadow:
+    0 0 60px rgba(74, 124, 255, 0.12),
+    0 0 120px rgba(74, 124, 255, 0.04);
+}
+
+.ci-kv-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200px;
+  height: 200px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle at center,
+    rgba(74, 124, 255, 0.08) 0%,
+    rgba(74, 124, 255, 0.02) 40%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.ci-kv-tagline {
+  font-family: var(--font-sans);
+  font-size: 0.5625rem;
+  font-weight: 500;
+  letter-spacing: 0.4em;
+  color: rgba(245, 240, 235, 0.25);
+  text-transform: uppercase;
+  user-select: none;
+  text-indent: 0.4em;
+}
+
+/* ── Horizontal Light Line ── */
+.ci-light-line {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scaleX(0);
+  width: min(320px, 60vw);
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(74, 124, 255, 0.2) 10%,
+    rgba(245, 240, 235, 0.55) 50%,
+    rgba(74, 124, 255, 0.2) 90%,
+    transparent 100%
+  );
+  transform-origin: center;
+  will-change: transform, opacity;
+  z-index: 2;
+}
+
+.ci-light-line-glow {
+  position: absolute;
+  inset: -6px 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(74, 124, 255, 0.06) 20%,
+    rgba(74, 124, 255, 0.12) 50%,
+    rgba(74, 124, 255, 0.06) 80%,
+    transparent 100%
+  );
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+/* ── Name Block ── */
+.ci-name {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.15em;
+  will-change: opacity, transform;
+  z-index: 3;
+  overflow: hidden;
+}
+
+.ci-name-line {
+  font-family: var(--font-sans);
+  font-size: clamp(2.75rem, 8vw, 6.875rem);
+  font-weight: 900;
+  letter-spacing: -0.025em;
+  line-height: 0.95;
+  color: var(--color-text-primary);
+  will-change: opacity, transform, filter;
+  white-space: nowrap;
+}
+
+/* ── Light Sweep (travels across name text) ── */
+.ci-name-sweep {
+  position: absolute;
+  top: -10%;
+  bottom: -10%;
+  width: 35%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(74, 124, 255, 0.04) 30%,
+    rgba(255, 255, 255, 0.07) 50%,
+    rgba(74, 124, 255, 0.04) 70%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* ── Reduced motion: skip entirely ── */
+@media (prefers-reduced-motion: reduce) {
+  .ci-overlay {
+    display: none !important;
+  }
+}
+
