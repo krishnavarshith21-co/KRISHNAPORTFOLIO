@@ -27,7 +27,6 @@ const CORE_WIRE = "#1a3a6a";
 const RING_METAL_1 = "#1f1f24";
 const RING_METAL_2 = "#121218";
 const BLUE_ACCENT = "#2b6eff";
-const BLUE_GLOW = "#1a45d1";
 
 // ── RING CONFIG ──
 interface RingConfig {
@@ -61,6 +60,7 @@ function useReducedMotion(): boolean {
   const [reduced, setReduced] = useState(false);
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setReduced(mq.matches);
     const handler = (e: MediaQueryListEvent) => setReduced(e.matches);
     mq.addEventListener("change", handler);
@@ -280,13 +280,14 @@ function OrbitingNodes({ reducedMotion }: { reducedMotion: boolean }) {
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * SCENE — assembles elements, lighting, and interactions
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-function Scene({ state }: { state: React.RefObject<SceneState> }) {
+function Scene({ sceneStateRef }: { sceneStateRef: React.RefObject<SceneState> }) {
   const mainGroupRef = useRef<THREE.Group>(null!);
   const reducedMotion = useReducedMotion();
 
   useFrame(({ clock }) => {
     if (!mainGroupRef.current) return;
-    const s = state.current;
+    const s = sceneStateRef.current;
+    if (!s) return;
 
     if (!reducedMotion) {
       // Smooth mouse parallax via lerp
@@ -371,8 +372,8 @@ export default function HeroVisualization() {
     targetMouseY: 0,
   });
 
-  // ── Mount guard ──
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     if (process.env.NODE_ENV === "development") {
       console.log("[HeroVisualization] mounted");
@@ -431,7 +432,7 @@ export default function HeroVisualization() {
         }}
       >
         <Suspense fallback={null}>
-          <Scene state={stateRef} />
+          <Scene sceneStateRef={stateRef} />
         </Suspense>
       </Canvas>
     </div>

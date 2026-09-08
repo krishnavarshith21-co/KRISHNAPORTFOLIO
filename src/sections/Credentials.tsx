@@ -44,12 +44,12 @@ export default function Credentials() {
 
   return (
     <section id="credentials" className="py-20 md:py-28 relative" aria-label="Credentials">
-      <div className="container-grid">
-        <ScrollReveal>
+      <div className="content-grid">
+        <ScrollReveal direction="right" distance={8}>
           <p className="section-number mb-4">CREDENTIALS</p>
         </ScrollReveal>
 
-        <ScrollReveal delay={0.06}>
+        <ScrollReveal delay={0.1}>
           <ParallaxLayer speed={0.04}>
             <h2 className="text-h1 text-[var(--color-text-primary)] mb-6">
               CREDENTIALS &amp; LEARNING
@@ -58,7 +58,7 @@ export default function Credentials() {
         </ScrollReveal>
 
         {/* Category counts */}
-        <ScrollReveal delay={0.12} distance={20}>
+        <ScrollReveal delay={0.15} distance={20}>
           <div className="flex flex-wrap gap-6 mb-10">
             {categories.map((cat) => {
               const count = credentials.filter((c) => c.category === cat).length;
@@ -79,7 +79,7 @@ export default function Credentials() {
           {credentials.map((cred, i) => {
             const isAchievement = cred.category === "ACHIEVEMENT";
             return (
-              <ScrollReveal key={cred.id} delay={Math.min(i * 0.03, 0.24)} distance={16}>
+              <ScrollReveal key={cred.id} delay={Math.min(i * 0.08, 0.3)} distance={16}>
                 <button
                   onClick={() => setSelectedId(cred.id)}
                   className={`w-full text-left grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-4 py-5 border-t border-[var(--color-border)] transition-all duration-300 px-4 -mx-4 group relative overflow-hidden ${
@@ -100,11 +100,11 @@ export default function Credentials() {
                     {cred.category}
                   </p>
                   <div className="md:col-span-6 flex items-center justify-between">
-                    <p className={`text-sm transition-colors ${isAchievement ? "text-white font-medium group-hover:text-[var(--color-accent)]" : "text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)]"}`}>
+                    <p className={`text-sm transition-all duration-300 ${isAchievement ? "text-white font-medium group-hover:text-[var(--color-accent)] group-hover:translate-x-[3px]" : "text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] group-hover:translate-x-[3px]"}`}>
                       {cred.title}
                     </p>
                     {isAchievement && (
-                      <span className="text-[9px] tracking-widest text-[var(--color-accent)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pr-4">
+                      <span className="text-[9px] tracking-widest text-[var(--color-accent)] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300 pr-4">
                         VIEW DETAILS ↗
                       </span>
                     )}

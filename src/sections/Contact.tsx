@@ -7,15 +7,15 @@ import { socialLinks } from "@/lib/data";
 export default function Contact() {
   return (
     <section id="contact" className="py-20 md:py-28 relative" aria-label="Contact">
-      <div className="container-grid">
-        <ScrollReveal>
+      <div className="content-grid">
+        <ScrollReveal direction="right" distance={8}>
           <p className="section-number mb-4">CONTACT</p>
         </ScrollReveal>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-end">
           {/* Left — Headline */}
           <div className="lg:col-span-7">
-            <ScrollReveal delay={0.06}>
+            <ScrollReveal delay={0.1}>
               <ParallaxLayer speed={0.04}>
                 <h2 className="text-[2.5rem] md:text-[3.5rem] lg:text-[4.5rem] font-black tracking-tight leading-[0.95] text-[var(--color-text-primary)] mb-6">
                   LET&apos;S BUILD
@@ -27,7 +27,7 @@ export default function Contact() {
               </ParallaxLayer>
             </ScrollReveal>
 
-            <ScrollReveal delay={0.12} distance={24}>
+            <ScrollReveal delay={0.15} distance={20}>
               <p className="text-body text-lg max-w-lg mb-6">
                 I&apos;m open to internships, engineering opportunities,
                 technical collaborations and interesting projects.
@@ -35,7 +35,7 @@ export default function Contact() {
             </ScrollReveal>
 
             {/* Availability badges */}
-            <ScrollReveal delay={0.18} distance={20}>
+            <ScrollReveal delay={0.2} distance={20}>
               <div className="flex flex-wrap gap-3">
                 {["OPEN TO INTERNSHIPS", "ENGINEERING OPPORTUNITIES", "TECHNICAL COLLABORATIONS"].map((badge) => (
                   <span
@@ -51,7 +51,7 @@ export default function Contact() {
 
           {/* Right — Links */}
           <div className="lg:col-span-4 lg:col-start-9">
-            <ScrollReveal delay={0.2} distance={24}>
+            <ScrollReveal delay={0.25} distance={20}>
               <div className="flex flex-col gap-3">
                 <a
                   href={`mailto:${socialLinks.email}`}

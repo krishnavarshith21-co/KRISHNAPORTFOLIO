@@ -15,16 +15,16 @@ const focusAreas = [
 
 export default function About() {
   return (
-    <section id="about" className="py-20 md:py-24 relative" aria-label="About">
-      <div className="container-grid">
+    <section id="about" className="py-20 md:py-28 relative" aria-label="About">
+      <div className="content-grid">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Left — Content */}
           <div className="lg:col-span-7">
-            <ScrollReveal>
-              <p className="section-number mb-6">ABOUT</p>
+            <ScrollReveal direction="right" distance={8}>
+              <p className="section-number mb-4">ABOUT</p>
             </ScrollReveal>
 
-            <ScrollReveal delay={0.06}>
+            <ScrollReveal delay={0.1}>
               <ParallaxLayer speed={0.04}>
                 <h2 className="text-h1 text-[var(--color-text-primary)] mb-12">
                   ENGINEER. BUILDER.
@@ -34,7 +34,7 @@ export default function About() {
               </ParallaxLayer>
             </ScrollReveal>
 
-            <ScrollReveal delay={0.12} distance={24}>
+            <ScrollReveal delay={0.2} distance={20}>
               <p className="text-lg text-[var(--color-text-secondary)] leading-relaxed mb-8 max-w-2xl">
                 I&apos;m Krishna Varshith, a student engineer interested in
                 artificial intelligence, cybersecurity, software systems and
@@ -42,7 +42,7 @@ export default function About() {
               </p>
             </ScrollReveal>
 
-            <ScrollReveal delay={0.18} distance={24}>
+            <ScrollReveal delay={0.25} distance={20}>
               <p className="text-body max-w-2xl">
                 My work focuses on understanding difficult technical problems,
                 building working systems and continuously learning through
@@ -53,7 +53,7 @@ export default function About() {
 
           {/* Right — Focus Areas Panel */}
           <div className="lg:col-span-4 lg:col-start-9">
-            <ScrollReveal delay={0.24} distance={24}>
+            <ScrollReveal delay={0.3} distance={20}>
               <div className="border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-8">
                 <p className="text-[10px] font-bold tracking-[0.2em] text-[var(--color-text-primary)] mb-8 uppercase">
                   Focus Areas

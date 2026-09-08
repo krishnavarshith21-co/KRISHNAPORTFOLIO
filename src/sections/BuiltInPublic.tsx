@@ -7,12 +7,12 @@ import { repositories, socialLinks } from "@/lib/data";
 export default function BuiltInPublic() {
   return (
     <section className="py-20 md:py-28 relative bg-[var(--color-bg-secondary)]" aria-label="GitHub Repositories">
-      <div className="container-grid">
-        <ScrollReveal>
+      <div className="content-grid">
+        <ScrollReveal direction="right" distance={8}>
           <p className="section-number mb-4">GITHUB</p>
         </ScrollReveal>
 
-        <ScrollReveal delay={0.06}>
+        <ScrollReveal delay={0.1}>
           <ParallaxLayer speed={0.04}>
             <h2 className="text-h1 text-[var(--color-text-primary)] mb-12">
               SELECTED REPOSITORIES
@@ -23,7 +23,7 @@ export default function BuiltInPublic() {
         {/* Repository grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[1px] bg-[var(--color-border)] mb-10">
           {repositories.map((repo, i) => (
-            <ScrollReveal key={repo.name} delay={Math.min(i * 0.06, 0.24)} distance={24}>
+            <ScrollReveal key={repo.name} delay={Math.min(0.15 + i * 0.08, 0.4)} distance={24}>
               <a
                 href={repo.url}
                 target="_blank"
@@ -50,7 +50,7 @@ export default function BuiltInPublic() {
           ))}
         </div>
 
-        <ScrollReveal delay={0.2}>
+        <ScrollReveal delay={0.25}>
           <a
             href={socialLinks.github}
             target="_blank"

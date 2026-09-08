@@ -44,6 +44,7 @@ export default function CinematicIntro({
   /* ── Session check ── */
   useEffect(() => {
     if (prefersReducedMotion) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setShouldSkip(true);
       return;
     }
@@ -70,6 +71,7 @@ export default function CinematicIntro({
         heroRevealCalled.current = true;
         onHeroReveal?.();
       }
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVisible(false);
       if (!completeCalled.current) {
         completeCalled.current = true;

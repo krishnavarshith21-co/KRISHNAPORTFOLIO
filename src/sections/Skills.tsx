@@ -11,12 +11,12 @@ export default function Skills() {
       className="py-20 md:py-28 relative"
       aria-label="Technical Capabilities"
     >
-      <div className="container-grid">
-        <ScrollReveal>
+      <div className="content-grid">
+        <ScrollReveal direction="right" distance={8}>
           <p className="section-number mb-4">TECHNICAL CAPABILITIES</p>
         </ScrollReveal>
 
-        <ScrollReveal delay={0.06}>
+        <ScrollReveal delay={0.1}>
           <ParallaxLayer speed={0.04}>
             <h2 className="text-h1 text-[var(--color-text-primary)] mb-12">
               TECHNOLOGIES
@@ -26,7 +26,7 @@ export default function Skills() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[1px] bg-[var(--color-border)]">
           {capabilities.map((category, i) => (
-            <ScrollReveal key={category.title} delay={0.1 + i * 0.08} distance={24}>
+            <ScrollReveal key={category.title} delay={0.15 + i * 0.1} distance={24}>
               <div className="bg-[var(--color-bg-primary)] h-full card-hover">
                 {/* Category header */}
                 <div className="p-5 md:p-6 bg-[var(--color-bg-secondary)]">

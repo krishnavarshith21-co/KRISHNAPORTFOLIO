@@ -1,7 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, useAnimation } from "framer-motion";
+import { useEffect, useRef } from "react";
 import { socialLinks } from "@/lib/data";
 
 const HeroVisualization = dynamic(
@@ -61,9 +62,34 @@ interface HeroProps {
 
 export default function Hero({ introReady = true }: HeroProps) {
   const prefersReducedMotion = useReducedMotion();
+  const controls = useAnimation();
+  const hasTriggered = useRef(false);
 
   /* Determine if animations should play */
   const shouldAnimate = introReady;
+
+  useEffect(() => {
+    if (shouldAnimate && !hasTriggered.current) {
+      controls.start("visible");
+      hasTriggered.current = true;
+    }
+  }, [shouldAnimate, controls]);
+
+  const handleViewportEnter = () => {
+    if (prefersReducedMotion || !hasTriggered.current) return;
+    controls.start("visible");
+  };
+
+  const handleViewportLeave = (entry: IntersectionObserverEntry | null) => {
+    if (prefersReducedMotion || !hasTriggered.current) return;
+    // Hero can typically only be left by scrolling down (leaving from the top)
+    const isLeavingFromTop = entry && entry.boundingClientRect.top < (window.innerHeight || 800) / 2;
+    if (isLeavingFromTop) {
+      controls.set("hiddenTop");
+    } else {
+      controls.set("hidden");
+    }
+  };
 
   /* Hero entrance variants — cinematic stagger */
   const containerVariants = {
@@ -77,9 +103,10 @@ export default function Hero({ introReady = true }: HeroProps) {
   };
 
   const itemVariants = prefersReducedMotion
-    ? { hidden: {}, visible: {} }
+    ? { hidden: {}, hiddenTop: {}, visible: {} }
     : {
         hidden: { opacity: 0, y: 20, filter: "blur(10px)" },
+        hiddenTop: { opacity: 0, y: -20, filter: "blur(10px)" },
         visible: {
           opacity: 1,
           y: 0,
@@ -89,9 +116,10 @@ export default function Hero({ introReady = true }: HeroProps) {
       };
 
   const nameVariants = prefersReducedMotion
-    ? { hidden: {}, visible: {} }
+    ? { hidden: {}, hiddenTop: {}, visible: {} }
     : {
         hidden: { opacity: 0, y: 28, filter: "blur(8px)" },
+        hiddenTop: { opacity: 0, y: -20, filter: "blur(8px)" },
         visible: {
           opacity: 1,
           y: 0,
@@ -101,9 +129,10 @@ export default function Hero({ introReady = true }: HeroProps) {
       };
 
   const vizVariants = prefersReducedMotion
-    ? { hidden: {}, visible: {} }
+    ? { hidden: {}, hiddenTop: {}, visible: {} }
     : {
         hidden: { opacity: 0, scale: 0.96, y: 14 },
+        hiddenTop: { opacity: 0, scale: 0.96, y: -10 },
         visible: {
           opacity: 1,
           scale: 1,
@@ -124,7 +153,10 @@ export default function Hero({ introReady = true }: HeroProps) {
           <motion.div
             variants={vizVariants}
             initial="hidden"
-            animate={shouldAnimate ? "visible" : "hidden"}
+            animate={controls}
+            onViewportEnter={handleViewportEnter}
+            onViewportLeave={handleViewportLeave}
+            viewport={{ margin: "200px 0px -40px 0px", amount: "some" }}
             className="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 w-[45%] max-w-[650px] h-[800px] z-0 pointer-events-auto items-center justify-center"
           >
             <HeroVisualization />
@@ -135,12 +167,15 @@ export default function Hero({ introReady = true }: HeroProps) {
             className="lg:col-span-6 flex flex-col z-10 pointer-events-none"
             variants={containerVariants}
             initial="hidden"
-            animate={shouldAnimate ? "visible" : "hidden"}
+            animate={controls}
+            onViewportEnter={handleViewportEnter}
+            onViewportLeave={handleViewportLeave}
+            viewport={{ margin: "200px 0px -40px 0px", amount: "some" }}
           >
             {/* Hello, I'm */}
             <motion.div variants={itemVariants}>
               <div className="text-[10px] md:text-[11px] font-semibold tracking-[0.3em] text-[var(--color-text-muted)] uppercase mb-4 pointer-events-auto">
-                Hello, I'm
+                Hello, I&apos;m
               </div>
             </motion.div>
 
@@ -219,8 +254,12 @@ export default function Hero({ introReady = true }: HeroProps) {
       {/* Bottom Layout Elements */}
       <motion.div
         initial={prefersReducedMotion ? {} : { opacity: 0 }}
-        animate={shouldAnimate ? { opacity: 1 } : { opacity: 0 }}
-        transition={{ duration: 1.2, delay: 1.0, ease: EASE }}
+        animate={controls}
+        variants={{
+          hidden: { opacity: 0 },
+          hiddenTop: { opacity: 0 },
+          visible: { opacity: 1, transition: { duration: 1.2, delay: 1.0, ease: EASE } }
+        }}
         className="absolute bottom-12 left-0 right-0 container-grid flex justify-between items-end z-20 pointer-events-none hidden md:flex"
       >
         {/* Left: Scroll to explore */}

@@ -6,7 +6,7 @@ import { projects, Project } from "@/lib/data";
 
 /* ── FEATURED LAYOUT (Mitra Verify) ── */
 const FeaturedLayout = ({ project }: { project: Project }) => (
-  <div className="py-12 md:py-16 border-t border-[var(--color-border)]">
+  <div className="py-12 md:py-16 border-t border-[var(--color-border)] group">
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
       {/* Left — Project Info */}
       <div className="lg:col-span-5">
@@ -14,7 +14,7 @@ const FeaturedLayout = ({ project }: { project: Project }) => (
           <p className="text-[10px] font-bold tracking-[0.2em] text-[var(--color-accent)] mb-4 uppercase">
             {project.badge || "FEATURED PROJECT"}
           </p>
-          <h3 className="text-[2rem] md:text-[2.5rem] font-black tracking-tight text-[var(--color-text-primary)] mb-3 leading-tight">
+          <h3 className="text-[2rem] md:text-[2.5rem] font-black tracking-tight text-[var(--color-text-primary)] mb-3 leading-tight transition-transform duration-300 group-hover:translate-x-[3px]">
             {project.title}
           </h3>
           {project.tagline && (
@@ -145,7 +145,7 @@ const FeaturedLayout = ({ project }: { project: Project }) => (
 
 /* ── EDITORIAL LAYOUT (TruthLens — wide row with technical depth) ── */
 const EditorialLayout = ({ project }: { project: Project }) => (
-  <div className="py-10 md:py-12 border-t border-[var(--color-border)]">
+  <div className="py-10 md:py-12 border-t border-[var(--color-border)] group">
     <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
       <div className="md:col-span-1">
         <p className="text-[10px] font-mono text-[var(--color-text-muted)]">
@@ -154,7 +154,7 @@ const EditorialLayout = ({ project }: { project: Project }) => (
       </div>
       <div className="md:col-span-3">
         <ScrollReveal distance={16}>
-          <h3 className="text-lg font-bold tracking-wide text-[var(--color-text-primary)] mb-1">
+          <h3 className="text-lg font-bold tracking-wide text-[var(--color-text-primary)] mb-1 transition-transform duration-300 group-hover:translate-x-[3px]">
             {project.title}
           </h3>
           <p className="text-[10px] tracking-[0.1em] text-[var(--color-text-muted)] mb-4 uppercase">
@@ -224,7 +224,7 @@ const SplitLayout = ({ project }: { project: Project }) => (
           <p className="text-[10px] font-mono text-[var(--color-text-muted)] mb-2">
             {project.number}
           </p>
-          <h3 className="text-xl font-bold tracking-wide text-[var(--color-text-primary)] mb-2">
+          <h3 className="text-xl font-bold tracking-wide text-[var(--color-text-primary)] mb-2 transition-transform duration-300 group-hover:translate-x-[3px]">
             {project.title}
           </h3>
           <p className="text-[10px] tracking-[0.1em] text-[var(--color-accent)] mb-4 uppercase">
@@ -344,7 +344,7 @@ const CompactLayout = ({ project }: { project: Project }) => (
           {project.description}
         </p>
       </div>
-      <p className="text-[10px] tracking-[0.1em] text-[var(--color-text-muted)] group-hover:text-[var(--color-accent)] transition-colors">
+      <p className="text-[10px] tracking-[0.1em] text-[var(--color-text-muted)] group-hover:text-[var(--color-accent)] transition-all duration-300 group-hover:translate-x-1">
         EXPLORE ↗
       </p>
     </div>
@@ -376,12 +376,12 @@ export default function SelectedWork() {
       className="py-20 md:py-28 relative"
       aria-label="Selected Work"
     >
-      <div className="container-grid">
-        <ScrollReveal>
+      <div className="content-grid">
+        <ScrollReveal direction="right" distance={8}>
           <p className="section-number mb-4">SELECTED WORK</p>
         </ScrollReveal>
 
-        <ScrollReveal delay={0.06}>
+        <ScrollReveal delay={0.1}>
           <ParallaxLayer speed={0.04}>
             <h2 className="text-h1 text-[var(--color-text-primary)] mb-4">
               SELECTED WORK
@@ -389,7 +389,7 @@ export default function SelectedWork() {
           </ParallaxLayer>
         </ScrollReveal>
 
-        <ScrollReveal delay={0.12} distance={24}>
+        <ScrollReveal delay={0.15} distance={20}>
           <p className="text-body text-lg mb-12 max-w-xl">
             Systems, applications and experiments I&apos;ve built.
           </p>
@@ -397,7 +397,7 @@ export default function SelectedWork() {
 
         {/* Render all projects with their respective layouts */}
         {projects.map((project, i) => (
-          <ScrollReveal key={project.id} delay={Math.min(i * 0.06, 0.3)} distance={24}>
+          <ScrollReveal key={project.id} delay={Math.min(0.2 + i * 0.1, 0.5)} distance={28}>
             <ProjectLayout project={project} />
           </ScrollReveal>
         ))}
