@@ -83,7 +83,7 @@ export default function ScrollReveal({
   };
 
   if (prefersReducedMotion) {
-    const Component = as as React.ElementType;
+    const Component = as as any;
     return (
       <Component ref={ref} className={className}>
         {children}
