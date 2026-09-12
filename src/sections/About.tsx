@@ -15,18 +15,18 @@ const focusAreas = [
 
 export default function About() {
   return (
-    <section id="about" className="py-20 md:py-28 relative" aria-label="About">
-      <div className="content-grid">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+    <section id="about" className="py-24 md:py-36 relative" aria-label="About">
+      <div className="wide-grid">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
           {/* Left — Content */}
-          <div className="lg:col-span-7">
+          <div className="lg:col-span-8">
             <ScrollReveal direction="right" distance={8}>
-              <p className="section-number mb-4">ABOUT</p>
+              <p className="text-eyebrow text-[var(--color-text-muted)] mb-4">ABOUT</p>
             </ScrollReveal>
 
             <ScrollReveal delay={0.1}>
               <ParallaxLayer speed={0.04}>
-                <h2 className="text-h1 text-[var(--color-text-primary)] mb-12">
+                <h2 className="text-h0 text-[var(--color-text-primary)] mb-12">
                   ENGINEER. BUILDER.
                   <br />
                   STUDENT.
@@ -51,26 +51,24 @@ export default function About() {
             </ScrollReveal>
           </div>
 
-          {/* Right — Focus Areas Panel */}
-          <div className="lg:col-span-4 lg:col-start-9">
+          {/* Right — Focus Areas — clean list, no box */}
+          <div className="lg:col-span-3 lg:col-start-10">
             <ScrollReveal delay={0.3} distance={20}>
-              <div className="border border-[var(--color-border)] bg-[var(--color-bg-secondary)] p-8">
-                <p className="text-[10px] font-bold tracking-[0.2em] text-[var(--color-text-primary)] mb-8 uppercase">
-                  Focus Areas
-                </p>
-                <div className="space-y-4">
-                  {focusAreas.map((area) => (
-                    <div
-                      key={area}
-                      className="flex items-center gap-3"
-                    >
-                      <div className="w-1 h-1 rounded-full bg-[var(--color-accent)]" />
-                      <p className="text-sm text-[var(--color-text-secondary)]">
-                        {area}
-                      </p>
-                    </div>
-                  ))}
-                </div>
+              <p className="text-eyebrow text-[var(--color-text-primary)] mb-8">
+                FOCUS AREAS
+              </p>
+              <div className="space-y-4">
+                {focusAreas.map((area) => (
+                  <div
+                    key={area}
+                    className="flex items-center gap-3"
+                  >
+                    <div className="w-1 h-1 rounded-full bg-[var(--color-accent)]" />
+                    <p className="text-sm text-[var(--color-text-secondary)]">
+                      {area}
+                    </p>
+                  </div>
+                ))}
               </div>
             </ScrollReveal>
           </div>

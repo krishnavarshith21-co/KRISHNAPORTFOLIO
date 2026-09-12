@@ -25,9 +25,10 @@ export interface Project {
 export interface Credential {
   id: string;
   date: string;
-  category: "HACKATHON" | "MASTERCLASS" | "WORKSHOP" | "CERTIFICATE" | "ACHIEVEMENT";
+  category: "HACKATHON" | "MASTERCLASS" | "WORKSHOP" | "CERTIFICATE" | "ACHIEVEMENT" | "APPRECIATION";
   title: string;
   organisation: string;
+  description?: string;
   certificateImage?: string;
 }
 
@@ -339,6 +340,24 @@ export const timeline: TimelineEntry[] = [
 // ── CREDENTIALS ──
 
 export const credentials: Credential[] = [
+  { 
+    id: "ethical-hacking-workshop", 
+    date: "8 Sep 2026", 
+    category: "WORKSHOP", 
+    title: "Ethical Hacking & Cybersecurity Workshop", 
+    organisation: "VaultofCodes", 
+    description: "2-Hour Ethical Hacking & Cybersecurity Workshop covering reconnaissance, network scanning, Wi-Fi security, web vulnerabilities, practical exercises, live demonstrations, and cybersecurity career pathways.",
+    certificateImage: "/certificates/ethical-hacking-workshop.png" 
+  },
+  { 
+    id: "shree-vasudha-appreciation", 
+    date: "17 Jul 2026", 
+    category: "APPRECIATION", 
+    title: "Certificate of Appreciation", 
+    organisation: "Shree Vasudha Projects", 
+    description: "Recognition for exceptional professionalism, creativity, and technical excellence demonstrated in the successful design and development of the official website.",
+    certificateImage: "/certificates/shree-vasudha-appreciation.jpg" 
+  },
   { id: "maker-conclave", date: "2026", category: "ACHIEVEMENT", title: "Maker Conclave", organisation: "Maker Conclave" },
   { id: "adobe-hackathon", date: "2026", category: "HACKATHON", title: "Adobe University Hackathon", organisation: "Adobe", certificateImage: "/certificates/adobe-hackathon.png" },
   { id: "takeover-hackathon", date: "2026", category: "HACKATHON", title: "Takeover Hackathon", organisation: "NIAT", certificateImage: "/certificates/takeover-hackathon.jpg" },
@@ -365,6 +384,7 @@ export const repositories: Repository[] = [
 // ── NAV ──
 
 export const navLinks = [
+  { label: "HOME", href: "#" },
   { label: "WORK", href: "#work" },
   { label: "ABOUT", href: "#about" },
   { label: "CAPABILITIES", href: "#capabilities" },

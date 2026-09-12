@@ -1,14 +1,19 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 import { ParallaxLayer } from "@/components/ScrollParallax";
-import { credentials } from "@/lib/data";
+import { credentials, type Credential } from "@/lib/data";
+
+const ALL_CATS = ["ALL", "ACHIEVEMENT", "HACKATHON", "MASTERCLASS", "WORKSHOP", "CERTIFICATE", "APPRECIATION"] as const;
+type Cat = (typeof ALL_CATS)[number];
 
 export default function Credentials() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [imgError, setImgError] = useState<Set<string>>(new Set());
+  const [filter, setFilter] = useState<Cat>("ALL");
+  const scrollRef = useRef<HTMLDivElement>(null);
   const selected = credentials.find((c) => c.id === selectedId);
 
   const close = useCallback(() => setSelectedId(null), []);
@@ -36,99 +41,181 @@ export default function Credentials() {
     };
   }, [selectedId, close, goNext, goPrev]);
 
-  const categories = ["ACHIEVEMENT", "HACKATHON", "MASTERCLASS", "WORKSHOP", "CERTIFICATE"] as const;
-
-  const handleImgError = (id: string) => {
+  const handleImgError = (id: string) =>
     setImgError((prev) => new Set(prev).add(id));
+
+  const filtered = useMemo(
+    () => (filter === "ALL" ? credentials : credentials.filter((c) => c.category === filter)),
+    [filter],
+  );
+
+  /* Scroll the card track */
+  const scrollTrack = (dir: "left" | "right") => {
+    if (!scrollRef.current) return;
+    const amount = scrollRef.current.offsetWidth * 0.6;
+    scrollRef.current.scrollBy({
+      left: dir === "right" ? amount : -amount,
+      behavior: "smooth",
+    });
   };
 
   return (
-    <section id="credentials" className="py-20 md:py-28 relative" aria-label="Credentials">
-      <div className="content-grid">
-        <ScrollReveal direction="right" distance={8}>
-          <p className="section-number mb-4">CREDENTIALS</p>
-        </ScrollReveal>
+    <section id="credentials" className="cr-section" aria-label="Credentials">
+      <div className="cr-ambient" />
 
-        <ScrollReveal delay={0.1}>
-          <ParallaxLayer speed={0.04}>
-            <h2 className="text-h1 text-[var(--color-text-primary)] mb-6">
-              CREDENTIALS &amp; LEARNING
-            </h2>
-          </ParallaxLayer>
-        </ScrollReveal>
+      <div className="wide-grid">
+        {/* ── Hero ── */}
+        <div className="cr-hero">
+          <div className="cr-hero-left">
+            <ScrollReveal direction="right" distance={8}>
+              <div className="cr-eyebrow-row">
+                <span className="cr-eyebrow-line" />
+                <span className="text-eyebrow cr-blue">CREDENTIALS</span>
+              </div>
+            </ScrollReveal>
 
-        {/* Category counts */}
-        <ScrollReveal delay={0.15} distance={20}>
-          <div className="flex flex-wrap gap-6 mb-10">
-            {categories.map((cat) => {
-              const count = credentials.filter((c) => c.category === cat).length;
-              return (
-                <p key={cat} className="text-[10px] font-bold tracking-[0.15em] text-[var(--color-text-primary)]">
-                  {cat}{" "}
-                  <span className="text-[var(--color-text-muted)] font-normal">
-                    ({count})
-                  </span>
-                </p>
-              );
-            })}
+            <ScrollReveal delay={0.1}>
+              <ParallaxLayer speed={0.04}>
+                <h2 className="cr-heading">
+                  CREDENTIALS <span className="cr-blue">&amp;</span> LEARNING
+                </h2>
+              </ParallaxLayer>
+            </ScrollReveal>
+
+            <ScrollReveal delay={0.15} distance={14}>
+              <p className="cr-desc">
+                A collection of certifications, workshops, hackathons, and recognitions that
+                reflect my learning journey and commitment to building, learning, and contributing.
+              </p>
+            </ScrollReveal>
+          </div>
+
+          <ScrollReveal delay={0.2} distance={14}>
+            <div className="cr-stat">
+              <span className="cr-stat-num">{credentials.length}+</span>
+              <span className="cr-stat-label">
+                CERTIFICATIONS
+                <br />
+                &amp; WORKSHOPS
+              </span>
+            </div>
+          </ScrollReveal>
+        </div>
+
+        {/* ── Filter Bar ── */}
+        <ScrollReveal delay={0.2} distance={10}>
+          <div className="cr-filter-bar">
+            <nav className="cr-nav" aria-label="Filter credentials">
+              {ALL_CATS.map((cat) => {
+                const count =
+                  cat === "ALL"
+                    ? credentials.length
+                    : credentials.filter((c) => c.category === cat).length;
+                if (count === 0 && cat !== "ALL") return null;
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => setFilter(cat)}
+                    className={`cr-nav-btn ${filter === cat ? "cr-nav-active" : ""}`}
+                    aria-pressed={filter === cat}
+                  >
+                    {filter === cat && <span className="cr-nav-dot" />}
+                    {cat} ({count})
+                  </button>
+                );
+              })}
+            </nav>
+
+            {/* Scroll arrows */}
+            <div className="cr-arrows">
+              <button
+                onClick={() => scrollTrack("left")}
+                className="cr-arrow-btn"
+                aria-label="Scroll left"
+              >
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                  <path d="M10 4L6 8l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+              <button
+                onClick={() => scrollTrack("right")}
+                className="cr-arrow-btn"
+                aria-label="Scroll right"
+              >
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            </div>
           </div>
         </ScrollReveal>
-
-        {/* Credential rows */}
-        <div>
-          {credentials.map((cred, i) => {
-            const isAchievement = cred.category === "ACHIEVEMENT";
-            return (
-              <ScrollReveal key={cred.id} delay={Math.min(i * 0.08, 0.3)} distance={16}>
-                <button
-                  onClick={() => setSelectedId(cred.id)}
-                  className={`w-full text-left grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-4 py-5 border-t border-[var(--color-border)] transition-all duration-300 px-4 -mx-4 group relative overflow-hidden ${
-                    isAchievement 
-                      ? "hover:bg-[var(--color-bg-secondary)] hover:border-[var(--color-accent)]/30" 
-                      : "hover:bg-[var(--color-bg-secondary)]"
-                  }`}
-                  data-cursor="VIEW"
-                  aria-label={`View certificate: ${cred.title}`}
-                >
-                  {isAchievement && (
-                    <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-accent)]/0 via-[var(--color-accent)]/[0.03] to-[var(--color-accent)]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                  )}
-                  <p className={`text-xs font-mono md:col-span-1 ${isAchievement ? "text-[var(--color-accent)]/80" : "text-[var(--color-text-muted)]"}`}>
-                    {cred.date}
-                  </p>
-                  <p className={`text-[10px] font-bold tracking-[0.12em] md:col-span-2 uppercase ${isAchievement ? "text-[var(--color-accent)] drop-shadow-[0_0_8px_rgba(var(--color-accent-rgb),0.3)]" : "text-[var(--color-accent)]"}`}>
-                    {cred.category}
-                  </p>
-                  <div className="md:col-span-6 flex items-center justify-between">
-                    <p className={`text-sm transition-all duration-300 ${isAchievement ? "text-white font-medium group-hover:text-[var(--color-accent)] group-hover:translate-x-[3px]" : "text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] group-hover:translate-x-[3px]"}`}>
-                      {cred.title}
-                    </p>
-                    {isAchievement && (
-                      <span className="text-[9px] tracking-widest text-[var(--color-accent)] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300 pr-4">
-                        VIEW DETAILS ↗
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-xs text-[var(--color-text-muted)] md:col-span-3 md:text-right flex items-center md:justify-end">
-                    {cred.organisation}
-                  </p>
-                </button>
-              </ScrollReveal>
-            );
-          })}
-          <div className="border-t border-[var(--color-border)]" />
-        </div>
       </div>
 
-      {/* Lightbox */}
+      {/* ── Horizontal Card Track ── */}
+      <ScrollReveal delay={0.25} distance={16}>
+        <div className="cr-track-wrap">
+          <div className="cr-track" ref={scrollRef}>
+            {/* Left spacer for grid alignment */}
+            <div className="cr-track-spacer" />
+
+            {filtered.map((cred, i) => {
+              const globalIdx = credentials.indexOf(cred);
+              return (
+                <button
+                  key={cred.id}
+                  onClick={() => setSelectedId(cred.id)}
+                  className="cr-card group"
+                  aria-label={`View certificate: ${cred.title}`}
+                >
+                  <div className="cr-card-head">
+                    <span className="cr-card-num">
+                      {String(globalIdx + 1).padStart(2, "0")}
+                    </span>
+                    <span className="cr-card-cat">{cred.category}</span>
+                  </div>
+
+                  <h3 className="cr-card-title">{cred.title}</h3>
+
+                  <div className="cr-card-foot">
+                    <div>
+                      <p className="cr-card-org">{cred.organisation}</p>
+                      <p className="cr-card-date">{cred.date}</p>
+                    </div>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      className="cr-card-arrow"
+                    >
+                      <path
+                        d="M5 11L11 5M11 5H6M11 5V10"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
+                </button>
+              );
+            })}
+
+            {/* Right spacer */}
+            <div className="cr-track-spacer" />
+          </div>
+        </div>
+      </ScrollReveal>
+
+      {/* ── Lightbox ── */}
       <AnimatePresence>
         {selected && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-[200] bg-[var(--color-bg-primary)]/95 backdrop-blur-xl flex items-center justify-center p-4 md:p-12"
+            transition={{ duration: 0.3 }}
+            className="cr-lb-backdrop"
             onClick={close}
             role="dialog"
             aria-modal="true"
@@ -137,70 +224,46 @@ export default function Credentials() {
             <motion.div
               initial={{ scale: 0.96, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.98, opacity: 0 }}
-              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="max-w-5xl w-full relative"
+              exit={{ scale: 0.97, opacity: 0 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="cr-lb-card"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Certificate image or placeholder */}
-              <div className="w-full aspect-[16/11] bg-[var(--color-bg-secondary)] border border-[var(--color-border)] flex items-center justify-center mb-6 overflow-hidden">
+              <button
+                onClick={close}
+                className="cr-lb-close"
+                aria-label="Close certificate viewer"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              </button>
+
+              <div className="cr-lb-img-wrap">
                 {selected.certificateImage && !imgError.has(selected.id) ? (
                   <img
                     src={selected.certificateImage}
-                    alt={`Certificate: ${selected.title}`}
-                    className="w-full h-full object-contain"
+                    alt={`Certificate: ${selected.title} — ${selected.organisation}`}
+                    className="cr-lb-img"
                     onError={() => handleImgError(selected.id)}
                   />
                 ) : (
-                  <div className="text-center px-8">
-                    <p className="text-[10px] tracking-widest text-[var(--color-accent)] mb-4">
-                      CREDENTIAL
-                    </p>
-                    <p className="text-xl md:text-3xl font-bold text-[var(--color-text-primary)] mb-3">
-                      {selected.title}
-                    </p>
-                    <p className="text-sm text-[var(--color-text-secondary)] mb-6">
-                      {selected.organisation}
-                    </p>
-                    <p className="text-[9px] font-mono text-[var(--color-text-muted)]">
-                      Certificate image not yet added
-                    </p>
+                  <div className="cr-lb-placeholder">
+                    <p className="cr-lb-ph-label">CREDENTIAL</p>
+                    <p className="cr-lb-ph-title">{selected.title}</p>
+                    <p className="cr-lb-ph-org">{selected.organisation}</p>
                   </div>
                 )}
               </div>
 
-              {/* Controls */}
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-6">
-                  <p className="text-[10px] font-bold tracking-[0.15em] text-[var(--color-accent)]">
-                    {selected.category}
-                  </p>
-                  <p className="text-xs font-mono text-[var(--color-text-muted)]">
-                    {selected.date}
-                  </p>
+              <div className="cr-lb-footer">
+                <div className="cr-lb-info">
+                  <span className="cr-lb-cat">{selected.category}</span>
+                  <span className="cr-lb-date">{selected.date}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={goPrev}
-                    className="px-4 py-2.5 border border-[var(--color-border)] text-[10px] tracking-[0.15em] text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)] transition-colors"
-                    aria-label="Previous"
-                  >
-                    ← PREV
-                  </button>
-                  <button
-                    onClick={goNext}
-                    className="px-4 py-2.5 border border-[var(--color-border)] text-[10px] tracking-[0.15em] text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)] transition-colors"
-                    aria-label="Next"
-                  >
-                    NEXT →
-                  </button>
-                  <button
-                    onClick={close}
-                    className="px-5 py-2.5 bg-[var(--color-text-primary)] text-[var(--color-bg-primary)] text-[10px] font-bold tracking-[0.15em] hover:bg-[var(--color-accent)] hover:text-white transition-colors ml-2"
-                    aria-label="Close"
-                  >
-                    CLOSE ✕
-                  </button>
+                <div className="cr-lb-nav">
+                  <button onClick={goPrev} className="cr-lb-btn" aria-label="Previous">← PREV</button>
+                  <button onClick={goNext} className="cr-lb-btn" aria-label="Next">NEXT →</button>
                 </div>
               </div>
             </motion.div>
@@ -208,7 +271,7 @@ export default function Credentials() {
         )}
       </AnimatePresence>
 
-      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-[var(--color-border)]" />
+      <div className="cr-rule" />
     </section>
   );
 }

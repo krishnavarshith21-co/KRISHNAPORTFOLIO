@@ -6,10 +6,10 @@ import { education } from "@/lib/data";
 
 export default function Education() {
   return (
-    <section id="education" className="py-20 md:py-28 relative" aria-label="Education">
-      <div className="content-grid">
+    <section id="education" className="py-24 md:py-36 relative" aria-label="Education">
+      <div className="wide-grid">
         <ScrollReveal direction="right" distance={8}>
-          <p className="section-number mb-4">EDUCATION</p>
+          <p className="text-eyebrow text-[var(--color-text-muted)] mb-4">EDUCATION</p>
         </ScrollReveal>
 
         <ScrollReveal delay={0.1}>
@@ -20,31 +20,26 @@ export default function Education() {
           </ParallaxLayer>
         </ScrollReveal>
 
-        {/* Dense matrix */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-[1px] bg-[var(--color-border)]">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16">
           {education.map((group, i) => (
             <ScrollReveal key={group.title} delay={0.15 + i * 0.1} distance={24}>
-              <div className="bg-[var(--color-bg-primary)] h-full card-hover">
-                <div className="p-5 md:p-6 bg-[var(--color-bg-secondary)]">
-                  <p className="text-xs font-bold tracking-[0.2em] text-[var(--color-text-primary)]">
-                    {group.title}
-                  </p>
-                </div>
-                <div className="p-5 md:p-6">
-                  <ul className="space-y-3">
-                    {group.subjects.map((subject) => (
-                      <li
-                        key={subject}
-                        className="text-sm text-[var(--color-text-secondary)] flex items-start gap-3"
-                      >
-                        <span className="text-[var(--color-accent)] mt-1.5 text-[6px]">
-                          ●
-                        </span>
-                        {subject}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+              <div>
+                <p className="text-eyebrow text-[var(--color-text-primary)] mb-6 pb-4 border-b border-[var(--color-border)]">
+                  {group.title}
+                </p>
+                <ul className="space-y-3">
+                  {group.subjects.map((subject) => (
+                    <li
+                      key={subject}
+                      className="text-sm text-[var(--color-text-secondary)] flex items-start gap-3"
+                    >
+                      <span className="text-[var(--color-accent)] mt-1.5 text-[6px]">
+                        ●
+                      </span>
+                      {subject}
+                    </li>
+                  ))}
+                </ul>
               </div>
             </ScrollReveal>
           ))}

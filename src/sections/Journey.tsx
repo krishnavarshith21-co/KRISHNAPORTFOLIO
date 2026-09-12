@@ -6,7 +6,7 @@ import { timeline } from "@/lib/data";
 
 const typeColors: Record<string, string> = {
   BUILDING: "text-[var(--color-accent)]",
-  ACHIEVEMENT: "text-[var(--color-accent)] drop-shadow-[0_0_8px_rgba(var(--color-accent-rgb),0.3)]",
+  ACHIEVEMENT: "text-[var(--color-accent)]",
   HACKATHON: "text-[var(--color-text-primary)]",
   LEARNING: "text-[var(--color-text-secondary)]",
   WORKSHOP: "text-[var(--color-text-secondary)]",
@@ -14,8 +14,8 @@ const typeColors: Record<string, string> = {
 
 export default function Journey() {
   return (
-    <section id="journey" className="py-20 md:py-28 relative bg-[var(--color-bg-secondary)]" aria-label="Journey">
-      <div className="content-grid">
+    <section id="journey" className="py-24 md:py-36 relative bg-[var(--color-bg-secondary)]" aria-label="Journey">
+      <div className="wide-grid">
         <ScrollReveal direction="right" distance={8}>
           <p className="section-number mb-4">JOURNEY</p>
         </ScrollReveal>

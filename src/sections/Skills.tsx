@@ -8,48 +8,44 @@ export default function Skills() {
   return (
     <section
       id="capabilities"
-      className="py-20 md:py-28 relative"
+      className="py-24 md:py-36 relative"
       aria-label="Technical Capabilities"
     >
-      <div className="content-grid">
+      <div className="wide-grid">
         <ScrollReveal direction="right" distance={8}>
-          <p className="section-number mb-4">TECHNICAL CAPABILITIES</p>
+          <p className="text-eyebrow text-[var(--color-text-muted)] mb-4">TECHNICAL CAPABILITIES</p>
         </ScrollReveal>
 
         <ScrollReveal delay={0.1}>
           <ParallaxLayer speed={0.04}>
-            <h2 className="text-h1 text-[var(--color-text-primary)] mb-12">
+            <h2 className="text-h1 text-[var(--color-text-primary)] mb-16">
               TECHNOLOGIES
             </h2>
           </ParallaxLayer>
         </ScrollReveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[1px] bg-[var(--color-border)]">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16">
           {capabilities.map((category, i) => (
             <ScrollReveal key={category.title} delay={0.15 + i * 0.1} distance={24}>
-              <div className="bg-[var(--color-bg-primary)] h-full card-hover">
+              <div>
                 {/* Category header */}
-                <div className="p-5 md:p-6 bg-[var(--color-bg-secondary)]">
-                  <p className="text-xs font-bold tracking-[0.2em] text-[var(--color-text-primary)]">
-                    {category.title}
-                  </p>
-                </div>
+                <p className="text-eyebrow text-[var(--color-text-primary)] mb-6 pb-4 border-b border-[var(--color-border)]">
+                  {category.title}
+                </p>
                 {/* Items */}
-                <div className="p-5 md:p-6">
-                  <ul className="space-y-3">
-                    {category.items.map((item) => (
-                      <li
-                        key={item}
-                        className="text-sm text-[var(--color-text-secondary)] flex items-start gap-3"
-                      >
-                        <span className="text-[var(--color-accent)] mt-1.5 text-[6px]">
-                          ●
-                        </span>
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                <ul className="space-y-3">
+                  {category.items.map((item) => (
+                    <li
+                      key={item}
+                      className="text-sm text-[var(--color-text-secondary)] flex items-start gap-3"
+                    >
+                      <span className="text-[var(--color-accent)] mt-1.5 text-[6px]">
+                        ●
+                      </span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
               </div>
             </ScrollReveal>
           ))}

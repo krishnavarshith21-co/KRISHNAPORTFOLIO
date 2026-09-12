@@ -6,7 +6,7 @@ import { socialLinks } from "@/lib/data";
 export default function Footer() {
   return (
     <footer className="border-t border-[var(--color-border)] py-10" role="contentinfo">
-      <div className="content-grid">
+      <div className="wide-grid">
         <ScrollReveal distance={16} duration={0.6}>
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             {/* Brand */}

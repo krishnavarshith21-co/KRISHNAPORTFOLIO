@@ -7,11 +7,32 @@ import { navLinks, socialLinks } from "@/lib/data";
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("#");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  /* Track active section */
+  useEffect(() => {
+    const sectionIds = navLinks.map((l) => l.href.replace("#", "")).filter(Boolean);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(`#${entry.target.id}`);
+          }
+        });
+      },
+      { rootMargin: "-40% 0px -55% 0px", threshold: 0 },
+    );
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -27,38 +48,52 @@ export default function Navbar() {
       <nav
         className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${
           scrolled
-            ? "bg-[var(--color-bg-primary)]/90 backdrop-blur-md border-b border-[var(--color-border)]"
+            ? "bg-[#050608]/85 backdrop-blur-xl border-b border-[var(--color-border)]"
             : "bg-transparent"
         }`}
         role="navigation"
         aria-label="Main navigation"
       >
-        <div className="container-grid flex items-center justify-between h-16">
+        <div className="wide-grid flex items-center justify-between h-14">
           {/* Logo */}
-          <a href="#" className="text-sm font-black tracking-[0.2em] text-[var(--color-text-primary)]">
+          <a
+            href="#"
+            className="text-[13px] font-black tracking-[0.25em] text-[var(--color-text-primary)] hover:text-[var(--color-accent)] transition-colors"
+          >
             KV
           </a>
 
-          {/* Desktop Nav */}
-          <div className="hidden lg:flex items-center gap-8">
+          {/* Desktop Nav — Center */}
+          <div className="hidden lg:flex items-center gap-1">
             {navLinks.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
-                className="text-[10px] font-medium tracking-[0.15em] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors"
+                className={`relative text-[9px] font-medium tracking-[0.16em] px-3 py-2 transition-colors ${
+                  activeSection === link.href
+                    ? "text-[var(--color-accent)]"
+                    : "text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
+                }`}
               >
                 {link.label}
+                {activeSection === link.href && (
+                  <motion.span
+                    layoutId="nav-indicator"
+                    className="absolute bottom-0 left-3 right-3 h-[1px] bg-[var(--color-accent)]"
+                    transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                  />
+                )}
               </a>
             ))}
           </div>
 
-          {/* Right side: social + resume */}
-          <div className="hidden lg:flex items-center gap-6">
+          {/* Right side */}
+          <div className="hidden lg:flex items-center gap-5">
             <a
               href={socialLinks.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[10px] font-medium tracking-[0.12em] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors"
+              className="text-[9px] font-medium tracking-[0.14em] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors"
             >
               GITHUB
             </a>
@@ -66,17 +101,15 @@ export default function Navbar() {
               href={socialLinks.linkedin}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[10px] font-medium tracking-[0.12em] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors"
+              className="text-[9px] font-medium tracking-[0.14em] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors"
             >
               LINKEDIN
             </a>
             <a
-              href="/resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[10px] font-bold tracking-[0.15em] text-[var(--color-accent)] hover:text-[var(--color-text-primary)] transition-colors"
+              href="#contact"
+              className="text-[9px] font-bold tracking-[0.14em] text-[var(--color-accent)] hover:text-[var(--color-text-primary)] transition-colors border border-[var(--color-border-accent)] px-4 py-1.5 hover:bg-[var(--color-accent)] hover:border-[var(--color-accent)]"
             >
-              RESUME ↗
+              LET&apos;S TALK
             </a>
           </div>
 
@@ -147,13 +180,11 @@ export default function Navbar() {
                 LINKEDIN ↗
               </a>
               <a
-                href="/resume.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="#contact"
                 onClick={() => setMobileOpen(false)}
                 className="text-[11px] font-bold tracking-[0.15em] text-[var(--color-accent)]"
               >
-                RESUME ↗
+                LET&apos;S TALK →
               </a>
             </div>
           </motion.div>
