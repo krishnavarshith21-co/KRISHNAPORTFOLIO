@@ -15,9 +15,7 @@ import Contact from "@/sections/Contact";
 import Footer from "@/sections/Footer";
 
 const Navbar = dynamic(() => import("@/components/Navbar"), { ssr: false });
-const CustomCursor = dynamic(() => import("@/components/CustomCursor"), {
-  ssr: false,
-});
+
 const CinematicIntro = dynamic(
   () => import("@/components/CinematicIntro"),
   { ssr: false }
@@ -33,7 +31,7 @@ export default function Home() {
   return (
     <>
       <CinematicIntro onHeroReveal={handleHeroReveal} />
-      <CustomCursor />
+
       <Navbar />
       <main>
         <Hero introReady={introReady} />

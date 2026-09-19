@@ -26,8 +26,8 @@ export default function ScrollReveal({
   className = "",
   delay = 0,
   direction = "up",
-  distance = 25,
-  duration = 0.8,
+  distance = 20,
+  duration = 0.9,
   as = "div",
 }: ScrollRevealProps) {
   const ref = useRef<HTMLElement>(null);
@@ -44,7 +44,7 @@ export default function ScrollReveal({
   // On mount, set initial state so it's hidden before JS executes onViewportEnter
   useEffect(() => {
     if (prefersReducedMotion) return;
-    controls.set({ opacity: 0, x: customXOffset, y: initialY });
+    controls.set({ opacity: 0, x: customXOffset, y: initialY, scale: 0.98 });
   }, [controls, customXOffset, initialY, prefersReducedMotion]);
 
   const handleViewportEnter = () => {
@@ -55,6 +55,7 @@ export default function ScrollReveal({
       opacity: 1,
       x: 0,
       y: 0,
+      scale: 1,
       transition: { duration, delay, ease: CINEMATIC_EASE },
     });
   };
@@ -79,6 +80,7 @@ export default function ScrollReveal({
       opacity: 0,
       x: customXOffset,
       y: leaveY,
+      scale: 0.98,
     });
   };
 
@@ -98,7 +100,7 @@ export default function ScrollReveal({
     <MotionComponent
       ref={ref}
       // initial state prevents flicker before framer motion takes over
-      initial={{ opacity: 0, x: customXOffset, y: initialY }}
+      initial={{ opacity: 0, x: customXOffset, y: initialY, scale: 0.98 }}
       animate={controls}
       onViewportEnter={handleViewportEnter}
       onViewportLeave={handleViewportLeave}

@@ -153,7 +153,7 @@ export default function Hero({ introReady = true }: HeroProps) {
           right: "10%",
           width: "600px",
           height: "600px",
-          background: "radial-gradient(ellipse, rgba(74,124,255,0.04) 0%, transparent 70%)",
+          background: "radial-gradient(ellipse, rgba(59,130,246,0.03) 0%, transparent 70%)",
           filter: "blur(80px)",
         }}
         aria-hidden="true"
@@ -170,8 +170,22 @@ export default function Hero({ introReady = true }: HeroProps) {
             onViewportEnter={handleViewportEnter}
             onViewportLeave={handleViewportLeave}
             viewport={{ margin: "200px 0px -40px 0px", amount: "some" }}
-            className="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 w-[50%] max-w-[700px] h-[800px] z-0 pointer-events-auto items-center justify-center"
+            className="hidden lg:flex absolute right-[2%] xl:right-[3%] top-1/2 -translate-y-1/2 w-[46%] xl:w-[48%] max-w-[660px] h-[740px] z-0 pointer-events-auto items-center justify-center"
           >
+            {/* Radial backdrop glow — separates 3D object from dark background */}
+            <div
+              className="absolute pointer-events-none"
+              style={{
+                top: "50%",
+                left: "50%",
+                width: "460px",
+                height: "460px",
+                transform: "translate(-50%, -50%)",
+                background: "radial-gradient(ellipse at center, rgba(255,255,255,0.025) 0%, rgba(59,130,246,0.015) 30%, transparent 65%)",
+                borderRadius: "50%",
+              }}
+              aria-hidden="true"
+            />
             <HeroVisualization />
           </motion.div>
 

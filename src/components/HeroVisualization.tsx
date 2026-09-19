@@ -6,27 +6,29 @@ import { Environment } from "@react-three/drei";
 import * as THREE from "three";
 
 /* ═══════════════════════════════════════════════════════════════
- * PREMIUM ENGINEERING CORE VISUALIZATION (TARGET DESIGN)
+ * PREMIUM ENGINEERING CORE VISUALIZATION
  *
- * Design: High-end technology rendering. Photorealistic dark 
- * metals, tinted glass, cinematic depth, and precise electric 
- * blue accents.
+ * Design: High-end engineering artifact. Dark graphite metals 
+ * with silver/white rim highlights, smoked glass core, precise
+ * orbital rings, restrained blue accent lighting.
  * 
- * Key Elements:
- * - Octahedron Core: Dark tinted glass revealing an inner blue glow.
- * - Orbital Rings: Highly polished metallic toruses reflecting 
- *   an environment map.
- * - Nodes: Small polished metallic spheres and blue emissive dots.
- * - Lighting: Cinematic key/fill/rim setup + Environment reflections.
- * - Motion: Extremely slow, luxurious, continuous.
+ * Key changes from previous version:
+ * - Brighter base materials (graphite #1a1d24, not near-black)
+ * - Strong white/silver rim lighting for edge definition
+ * - 3 rings (precision) instead of 5 (noise)
+ * - 6 nodes (crafted) instead of 12 (clutter)
+ * - 40% slower rotation for sophisticated motion
+ * - Higher ambient + key light for overall readability
+ * - Increased tone mapping exposure (1.5 vs 1.2)
  * ═══════════════════════════════════════════════════════════════ */
 
 // ── PALETTE ──
-const CORE_GLASS = "#050a12";
-const CORE_WIRE = "#1a3a6a";
-const RING_METAL_1 = "#1f1f24";
-const RING_METAL_2 = "#121218";
-const BLUE_ACCENT = "#2b6eff";
+const CORE_GLASS = "#1a1d24";      // Dark graphite glass — visible against #050608 bg
+const CORE_WIRE = "#3a4a6a";       // Brighter wireframe edges
+const RING_METAL_1 = "#2a2d35";    // Lighter graphite for even rings
+const RING_METAL_2 = "#1e2028";    // Slightly darker for odd rings
+const BLUE_ACCENT = "#3B82F6";     // Restrained electric blue
+const NODE_METAL = "#606878";      // Silver-graphite nodes
 
 // ── RING CONFIG ──
 interface RingConfig {
@@ -37,13 +39,11 @@ interface RingConfig {
   segments: number;
 }
 
-// 5 Rings of varying thickness and radii, angled to create a complex orbital sphere
+// 3 Rings — clean, precise, elegant orbital structure
 const RINGS: RingConfig[] = [
-  { radius: 1.8, tube: 0.045, tilt: [1.2, 0.4, 0.1], speed: 0.05, segments: 128 },
-  { radius: 2.2, tube: 0.015, tilt: [-0.3, 0.8, -0.4], speed: -0.04, segments: 128 },
-  { radius: 2.6, tube: 0.035, tilt: [0.6, -0.5, 0.7], speed: 0.03, segments: 96 },
-  { radius: 2.9, tube: 0.008, tilt: [-0.8, -0.2, 0.5], speed: 0.06, segments: 96 },
-  { radius: 3.3, tube: 0.025, tilt: [0.1, 1.1, -0.2], speed: -0.025, segments: 128 },
+  { radius: 1.9, tube: 0.04, tilt: [1.1, 0.3, 0.1], speed: 0.03, segments: 128 },
+  { radius: 2.4, tube: 0.02, tilt: [-0.4, 0.9, -0.3], speed: -0.025, segments: 128 },
+  { radius: 2.9, tube: 0.03, tilt: [0.5, -0.4, 0.6], speed: 0.018, segments: 128 },
 ];
 
 // ── SHARED STATE ──
@@ -72,33 +72,33 @@ function useReducedMotion(): boolean {
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * 1. CRYSTAL CORE — faceted dark-glass octahedron
  *
- * Uses MeshPhysicalMaterial to create a thick, dark, 
- * tinted glass effect that reveals the inner blue glow.
+ * Uses MeshPhysicalMaterial for thick dark glass effect.
+ * Brighter base color (#1a1d24) ensures facets catch light.
+ * Strong clearcoat creates highlight reflections on edges.
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 function CrystalCore({ reducedMotion }: { reducedMotion: boolean }) {
   const groupRef = useRef<THREE.Group>(null!);
-  const outerCoreRef = useRef<THREE.Mesh>(null!);
   const innerGlowRef = useRef<THREE.PointLight>(null!);
 
   useFrame(({ clock }, delta) => {
     if (!groupRef.current || reducedMotion) return;
     const t = clock.getElapsedTime();
 
-    // Increased rotation on multiple axes
-    groupRef.current.rotation.y += delta * 0.12;
-    groupRef.current.rotation.x += delta * 0.075;
-    groupRef.current.rotation.z += delta * 0.045;
+    // Slow, multi-axis rotation (40% slower than before)
+    groupRef.current.rotation.y += delta * 0.07;
+    groupRef.current.rotation.x += delta * 0.045;
+    groupRef.current.rotation.z += delta * 0.027;
 
-    // Subtle breathing/pulsing of the inner light
+    // Subtle breathing of the inner light
     if (innerGlowRef.current) {
-      innerGlowRef.current.intensity = 2.5 + Math.sin(t * 0.5) * 0.8;
+      innerGlowRef.current.intensity = 2.0 + Math.sin(t * 0.4) * 0.5;
     }
   });
 
   return (
     <group ref={groupRef}>
-      {/* Inner Energy Core */}
-      <mesh scale={0.4}>
+      {/* Inner Energy Core — small bright element visible through glass */}
+      <mesh scale={0.35}>
         <icosahedronGeometry args={[1, 2]} />
         <meshBasicMaterial color={BLUE_ACCENT} />
       </mesh>
@@ -107,37 +107,37 @@ function CrystalCore({ reducedMotion }: { reducedMotion: boolean }) {
       <pointLight
         ref={innerGlowRef}
         color={BLUE_ACCENT}
-        intensity={3}
-        distance={8}
+        intensity={2.0}
+        distance={6}
         decay={2}
       />
 
-      {/* Outer Shell: Dark Tinted Glass Octahedron */}
-      <mesh ref={outerCoreRef}>
+      {/* Outer Shell: Dark Graphite Glass Octahedron */}
+      <mesh>
         <octahedronGeometry args={[1.1, 0]} />
         <meshPhysicalMaterial
           color={CORE_GLASS}
-          metalness={0.9}
-          roughness={0.05}
-          transmission={0.8}    // Glass-like transparency
-          thickness={0.5}       // Refraction thickness
-          ior={1.5}             // Index of refraction
-          clearcoat={1.0}       // Extra glossy layer
-          clearcoatRoughness={0.1}
-          envMapIntensity={1.5} // Strong environment reflections
+          metalness={0.85}
+          roughness={0.08}
+          transmission={0.7}
+          thickness={0.6}
+          ior={1.5}
+          clearcoat={1.0}
+          clearcoatRoughness={0.05}
+          envMapIntensity={2.0}
           transparent
-          opacity={0.95}
+          opacity={0.92}
         />
       </mesh>
 
-      {/* Structural Wireframe Overlay for sharp facet definition */}
+      {/* Structural Wireframe — sharper edges, brighter lines */}
       <mesh>
-        <octahedronGeometry args={[1.102, 0]} />
+        <octahedronGeometry args={[1.105, 0]} />
         <meshBasicMaterial
           color={CORE_WIRE}
           wireframe
           transparent
-          opacity={0.15}
+          opacity={0.2}
           depthWrite={false}
           blending={THREE.AdditiveBlending}
         />
@@ -149,8 +149,8 @@ function CrystalCore({ reducedMotion }: { reducedMotion: boolean }) {
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * 2. ORBITAL RINGS — polished metallic bands
  *
- * Highly reflective toruses using MeshStandardMaterial
- * relying heavily on the Environment map for metallic feel.
+ * Brighter metals with higher envMapIntensity for strong
+ * specular reflections. 3 rings for precision.
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 function OrbitalRings({ reducedMotion }: { reducedMotion: boolean }) {
   const ringGroupRefs = useRef<THREE.Group[]>([]);
@@ -162,7 +162,6 @@ function OrbitalRings({ reducedMotion }: { reducedMotion: boolean }) {
     RINGS.forEach((ring, i) => {
       const grp = ringGroupRefs.current[i];
       if (!grp) return;
-      // Rotate the entire ring group around its tilted axis
       grp.rotation.set(ring.tilt[0], ring.tilt[1] + t * ring.speed, ring.tilt[2]);
     });
   });
@@ -182,16 +181,16 @@ function OrbitalRings({ reducedMotion }: { reducedMotion: boolean }) {
             <meshStandardMaterial
               color={i % 2 === 0 ? RING_METAL_1 : RING_METAL_2}
               metalness={1.0}
-              roughness={0.08 + i * 0.02} // Slight variation in polish
-              envMapIntensity={2.0} // Crucial for the metallic look
+              roughness={0.06 + i * 0.02}
+              envMapIntensity={2.8}
             />
           </mesh>
 
           {/* Thin Inner Track (Subtle groove detail) */}
           <mesh>
-            <torusGeometry args={[ring.radius - ring.tube * 0.4, ring.tube * 0.15, 8, ring.segments]} />
+            <torusGeometry args={[ring.radius - ring.tube * 0.4, ring.tube * 0.12, 8, ring.segments]} />
             <meshStandardMaterial
-              color="#000000"
+              color="#0a0a0e"
               metalness={0.8}
               roughness={0.5}
             />
@@ -203,24 +202,24 @@ function OrbitalRings({ reducedMotion }: { reducedMotion: boolean }) {
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * 3. ORBITING NODES — small metallic & glowing spheres
+ * 3. ORBITING NODES — small metallic spheres
  *
- * Attached to the rings' orbital paths.
+ * 6 nodes for precision. Silver-graphite material catches
+ * rim lighting strongly.
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-const NODE_COUNT = 12;
+const NODE_COUNT = 6;
 
 function OrbitingNodes({ reducedMotion }: { reducedMotion: boolean }) {
   const nodeRefs = useRef<THREE.Mesh[]>([]);
 
-  // Pre-calculate random assignments for consistency
   const nodes = useMemo(() => {
     const arr = [];
     for (let i = 0; i < NODE_COUNT; i++) {
       arr.push({
         ringIdx: i % RINGS.length,
         startAngle: (i / NODE_COUNT) * Math.PI * 2,
-        speedMult: 1.2 + (i % 4) * 0.3,
-        size: 0.06 + (i % 3) * 0.02,
+        speedMult: 1.0 + (i % 3) * 0.2,
+        size: 0.065 + (i % 3) * 0.02,
       });
     }
     return arr;
@@ -237,11 +236,9 @@ function OrbitingNodes({ reducedMotion }: { reducedMotion: boolean }) {
       const ring = RINGS[n.ringIdx];
       const angle = n.startAngle + t * ring.speed * n.speedMult;
 
-      // Calculate position on the untilted ring
       const x = Math.cos(angle) * ring.radius;
       const z = Math.sin(angle) * ring.radius;
 
-      // Apply the ring's current full rotation (tilt + animated rotation)
       const euler = new THREE.Euler(
         ring.tilt[0],
         ring.tilt[1] + t * ring.speed,
@@ -257,7 +254,6 @@ function OrbitingNodes({ reducedMotion }: { reducedMotion: boolean }) {
     <group>
       {nodes.map((n, i) => (
         <group key={i}>
-          {/* Solid polished dark metallic node */}
           <mesh
             ref={(el) => {
               if (el) nodeRefs.current[i] = el;
@@ -265,10 +261,10 @@ function OrbitingNodes({ reducedMotion }: { reducedMotion: boolean }) {
           >
             <sphereGeometry args={[n.size, 32, 16]} />
             <meshStandardMaterial
-              color="#555566" // Dark graphite / silver base
+              color={NODE_METAL}
               metalness={1.0}
-              roughness={0.3} // Physically plausible metallic roughness
-              envMapIntensity={2.5}
+              roughness={0.2}
+              envMapIntensity={3.0}
             />
           </mesh>
         </group>
@@ -279,6 +275,13 @@ function OrbitingNodes({ reducedMotion }: { reducedMotion: boolean }) {
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  * SCENE — assembles elements, lighting, and interactions
+ *
+ * Lighting strategy for visibility:
+ * - Ambient: 0.3 (doubled from 0.15 — prevents pure black areas)
+ * - Key light: 3.5 intensity white from top-right
+ * - Fill light: 1.2 cool blue-white from bottom-left  
+ * - Rim light: 3.0 white from behind-right (silver edge highlights)
+ * - Accent light: 4.0 blue spot from behind (restrained blue hint)
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 function Scene({ sceneStateRef }: { sceneStateRef: React.RefObject<SceneState> }) {
   const mainGroupRef = useRef<THREE.Group>(null!);
@@ -300,53 +303,61 @@ function Scene({ sceneStateRef }: { sceneStateRef: React.RefObject<SceneState> }
 
       // Idle floating motion
       const t = clock.getElapsedTime();
-      mainGroupRef.current.position.y = Math.sin(t * 0.4) * 0.1;
-      mainGroupRef.current.position.x = Math.sin(t * 0.3) * 0.05;
+      mainGroupRef.current.position.y = Math.sin(t * 0.3) * 0.08;
+      mainGroupRef.current.position.x = Math.sin(t * 0.2) * 0.04;
     }
 
     // Subtle scroll-based rotation and downward drift
     const scroll = s.scrollProgress;
     if (!reducedMotion && scroll > 0) {
-      mainGroupRef.current.rotation.y += scroll * 0.4;
-      mainGroupRef.current.position.y -= scroll * 1.2;
+      mainGroupRef.current.rotation.y += scroll * 0.3;
+      mainGroupRef.current.position.y -= scroll * 1.0;
     }
   });
 
   return (
     <>
       {/* ── ENVIRONMENT MAPPING ── */}
-      {/* City environment provides high-contrast urban reflections perfect for polished metal */}
       <Environment preset="city" />
 
       {/* ── CINEMATIC LIGHTING ── */}
-      <ambientLight intensity={0.15} />
+      
+      {/* Ambient — higher base for overall readability */}
+      <ambientLight intensity={0.3} />
 
-      {/* Soft Key Light from Top Right */}
+      {/* Key Light — strong white from top-right */}
       <directionalLight
         position={[8, 10, 5]}
-        intensity={2.5}
+        intensity={3.5}
         color="#ffffff"
       />
 
-      {/* Cool Fill Light from Bottom Left */}
+      {/* Cool Fill Light — from bottom-left, prevents pure black shadows */}
       <directionalLight
         position={[-8, -5, 5]}
-        intensity={1.0}
-        color="#a0b0d0"
+        intensity={1.2}
+        color="#c0c8d8"
       />
 
-      {/* Strong Blue Rim Light from Behind */}
+      {/* Silver Rim Light — from behind-right, creates edge highlights */}
+      <directionalLight
+        position={[5, 3, -8]}
+        intensity={3.0}
+        color="#e0e8f0"
+      />
+
+      {/* Restrained Blue Accent — from behind, subtle color hint only */}
       <spotLight
-        position={[0, 5, -10]}
-        intensity={15}
+        position={[0, 4, -10]}
+        intensity={4.0}
         angle={0.6}
         penumbra={0.5}
         color={BLUE_ACCENT}
-        distance={25}
+        distance={22}
       />
 
       {/* ── SCENE GROUP ── */}
-      <group ref={mainGroupRef} scale={0.82}>
+      <group ref={mainGroupRef} scale={0.78}>
         <CrystalCore reducedMotion={reducedMotion} />
         <OrbitalRings reducedMotion={reducedMotion} />
         <OrbitingNodes reducedMotion={reducedMotion} />
@@ -359,7 +370,7 @@ function Scene({ sceneStateRef }: { sceneStateRef: React.RefObject<SceneState> }
  * EXPORTED COMPONENT
  *
  * Container: fills parent (w-full h-full). Parent in Hero.tsx
- * is absolutely positioned with w-[45%] h-[800px].
+ * is absolutely positioned with w-[50%] h-[800px].
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 export default function HeroVisualization() {
   const [mounted, setMounted] = useState(false);
@@ -422,9 +433,8 @@ export default function HeroVisualization() {
         }}
         style={{ background: "transparent" }}
         onCreated={({ gl }) => {
-          // ACESFilmic Tone Mapping is essential for photorealistic metal/glass rendering
           gl.toneMapping = THREE.ACESFilmicToneMapping;
-          gl.toneMappingExposure = 1.2;
+          gl.toneMappingExposure = 1.5;
           if (process.env.NODE_ENV === "development") {
             const c = gl.domElement;
             console.log(`[HeroVisualization] WebGL OK — ${c.width}×${c.height}`);

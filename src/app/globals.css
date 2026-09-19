@@ -7,30 +7,29 @@
 @theme inline {
   /* ── Backgrounds ── */
   --color-bg-primary: #050608;
-  --color-bg-secondary: #080B10;
-  --color-bg-tertiary: #0d1018;
-  --color-bg-elevated: #111520;
-  --color-bg-card: #0a0e16;
+  --color-bg-secondary: #08090C;
+  --color-bg-tertiary: #0C0D12;
+  --color-bg-elevated: #111419;
+  --color-bg-card: #0a0c12;
 
   /* ── Typography ── */
-  --color-text-primary: #F5F7FA;
-  --color-text-secondary: #B8BEC8;
+  --color-text-primary: #F5F5F5;
+  --color-text-secondary: #B0B8C4;
   --color-text-tertiary: #6B7280;
   --color-text-muted: #3D4550;
 
   /* ── Accent ── */
-  --color-accent: #4a7cff;
-  --color-accent-hover: #6090ff;
-  --color-accent-muted: rgba(74, 124, 255, 0.15);
+  --color-accent: #3B82F6;
+  --color-accent-hover: #5B9BF7;
+  --color-accent-muted: rgba(59, 130, 246, 0.15);
 
   /* ── Borders ── */
   --color-border: rgba(200, 210, 225, 0.08);
   --color-border-hover: rgba(200, 210, 225, 0.15);
-  --color-border-accent: rgba(74, 124, 255, 0.3);
+  --color-border-accent: rgba(59, 130, 246, 0.3);
 
   /* ── Atmospheric ── */
-  --color-glow-indigo: rgba(42, 31, 94, 0.08);
-  --color-glow-blue: rgba(74, 124, 255, 0.06);
+  --color-glow-blue: rgba(59, 130, 246, 0.05);
 
   /* ── Fonts ── */
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
@@ -48,15 +47,7 @@
 }
 
 /* ── Base ── */
-* {
-  cursor: none;
-}
 
-@media (pointer: coarse) {
-  * {
-    cursor: auto;
-  }
-}
 
 html {
   scroll-behavior: smooth;
@@ -71,7 +62,7 @@ body {
   font-family: var(--font-sans);
   overflow-x: hidden;
   position: relative;
-  --color-accent-rgb: 74, 124, 255;
+  --color-accent-rgb: 59, 130, 246;
 }
 
 /* ── Grain Texture Overlay ── */
@@ -89,8 +80,8 @@ body::before {
 
 /* ── Selection ── */
 ::selection {
-  background: rgba(74, 124, 255, 0.25);
-  color: #F5F7FA;
+  background: rgba(59, 130, 246, 0.25);
+  color: #F5F5F5;
 }
 
 /* ── Scrollbar ── */
@@ -369,8 +360,8 @@ body::before {
   transform: translate(-50%, -50%);
   background: radial-gradient(
     ellipse at center,
-    rgba(74, 124, 255, 0.06) 0%,
-    rgba(42, 31, 94, 0.04) 30%,
+    rgba(59, 130, 246, 0.05) 0%,
+    rgba(59, 130, 246, 0.02) 35%,
     transparent 65%
   );
   border-radius: 50%;
@@ -418,8 +409,8 @@ body::before {
   user-select: none;
   text-indent: 0.5em; /* Compensate trailing letter-spacing */
   text-shadow:
-    0 0 60px rgba(74, 124, 255, 0.12),
-    0 0 120px rgba(74, 124, 255, 0.04);
+    0 0 60px rgba(59, 130, 246, 0.12),
+    0 0 120px rgba(59, 130, 246, 0.04);
 }
 
 .ci-kv-glow {
@@ -431,8 +422,8 @@ body::before {
   transform: translate(-50%, -50%);
   background: radial-gradient(
     circle at center,
-    rgba(74, 124, 255, 0.08) 0%,
-    rgba(74, 124, 255, 0.02) 40%,
+    rgba(59, 130, 246, 0.08) 0%,
+    rgba(59, 130, 246, 0.02) 40%,
     transparent 70%
   );
   border-radius: 50%;
@@ -461,9 +452,9 @@ body::before {
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(74, 124, 255, 0.2) 10%,
+    rgba(59, 130, 246, 0.2) 10%,
     rgba(245, 240, 235, 0.55) 50%,
-    rgba(74, 124, 255, 0.2) 90%,
+    rgba(59, 130, 246, 0.2) 90%,
     transparent 100%
   );
   transform-origin: center;
@@ -477,9 +468,9 @@ body::before {
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(74, 124, 255, 0.06) 20%,
-    rgba(74, 124, 255, 0.12) 50%,
-    rgba(74, 124, 255, 0.06) 80%,
+    rgba(59, 130, 246, 0.06) 20%,
+    rgba(59, 130, 246, 0.12) 50%,
+    rgba(59, 130, 246, 0.06) 80%,
     transparent 100%
   );
   filter: blur(6px);
@@ -522,9 +513,9 @@ body::before {
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(74, 124, 255, 0.04) 30%,
+    rgba(59, 130, 246, 0.04) 30%,
     rgba(255, 255, 255, 0.07) 50%,
-    rgba(74, 124, 255, 0.04) 70%,
+    rgba(59, 130, 246, 0.04) 70%,
     transparent 100%
   );
   pointer-events: none;
@@ -562,8 +553,8 @@ body::before {
   transform: translateX(-50%);
   background: radial-gradient(
     ellipse at 50% 0%,
-    rgba(74, 124, 255, 0.04) 0%,
-    rgba(74, 124, 255, 0.015) 35%,
+    rgba(59, 130, 246, 0.04) 0%,
+    rgba(59, 130, 246, 0.015) 35%,
     transparent 70%
   );
   pointer-events: none; z-index: 0;
@@ -608,7 +599,7 @@ body::before {
 .cr-stat {
   display: flex; flex-direction: column;
   align-items: flex-end;
-  border-left: 1px solid rgba(74, 124, 255, 0.25);
+  border-left: 1px solid rgba(59, 130, 246, 0.25);
   padding-left: 1.5rem;
 }
 .cr-stat-num {
@@ -730,12 +721,12 @@ body::before {
   border-right: 1px solid var(--color-border);
 }
 .cr-card:hover {
-  background: rgba(74, 124, 255, 0.03);
-  border-color: rgba(74, 124, 255, 0.12);
+  background: rgba(59, 130, 246, 0.03);
+  border-color: rgba(59, 130, 246, 0.12);
 }
 /* make adjacent card's left border also light on hover */
 .cr-card:hover + .cr-card {
-  border-left-color: rgba(74, 124, 255, 0.12);
+  border-left-color: rgba(59, 130, 246, 0.12);
 }
 
 @media (min-width: 768px) {
