@@ -219,15 +219,15 @@ export default function Hero({ introReady = true }: HeroProps) {
             <motion.div variants={itemVariants}>
               <div className="flex flex-wrap items-center gap-3 mb-8 pointer-events-auto">
                 <span className="text-[10px] md:text-[11px] font-bold tracking-[0.2em] text-[var(--color-accent)] uppercase">
-                  AI Engineer
+                  AI / ML
                 </span>
                 <span className="text-[var(--color-text-muted)]">/</span>
                 <span className="text-[10px] md:text-[11px] font-bold tracking-[0.2em] text-[var(--color-accent)] uppercase">
-                  Software Engineer
+                  Full-Stack Software
                 </span>
                 <span className="text-[var(--color-text-muted)]">/</span>
                 <span className="text-[10px] md:text-[11px] font-bold tracking-[0.2em] text-[var(--color-accent)] uppercase">
-                  Cybersecurity Builder
+                  Cybersecurity
                 </span>
               </div>
             </motion.div>
@@ -235,7 +235,7 @@ export default function Hero({ introReady = true }: HeroProps) {
             {/* Supporting copy */}
             <motion.div variants={itemVariants}>
               <p className="text-base md:text-lg text-[var(--color-text-secondary)] leading-relaxed max-w-lg mb-12 pointer-events-auto">
-                Student engineer building intelligent systems, security-focused software and practical AI applications.
+                Student engineer pursuing B.Tech in Computer Science &amp; Engineering (AI &amp; Data Science), building AI/ML applications, full-stack software, and security-focused systems.
               </p>
             </motion.div>
 

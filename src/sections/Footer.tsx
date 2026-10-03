@@ -15,7 +15,7 @@ export default function Footer() {
                 KV
               </p>
               <p className="text-xs text-[var(--color-text-muted)]">
-                Krishna Varshith · AI Engineer · Software Engineer
+                Krishna Varshith · AI/ML · Full-Stack Software · Cybersecurity
               </p>
             </div>
 

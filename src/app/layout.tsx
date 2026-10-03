@@ -9,21 +9,21 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Krishna Varshith — AI Engineer & Software Engineer",
+  title: "Krishna Varshith Kamanaboina — AI/ML · Full-Stack Software · Cybersecurity",
   description:
-    "Krishna Varshith is a student engineer building intelligent systems, security-focused software and practical AI applications.",
+    "Student engineer pursuing B.Tech in CSE (AI & Data Science), with hands-on experience building AI/ML applications, full-stack web applications, APIs, and security-focused software.",
   openGraph: {
-    title: "Krishna Varshith — AI Engineer & Software Engineer",
+    title: "Krishna Varshith Kamanaboina — AI/ML · Full-Stack Software · Cybersecurity",
     description:
-      "Student engineer building intelligent systems, security-focused software and practical AI applications.",
+      "Student engineer pursuing B.Tech in CSE (AI & Data Science), building AI/ML applications, full-stack web applications, and security-focused software.",
     type: "website",
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Krishna Varshith — AI Engineer & Software Engineer",
+    title: "Krishna Varshith Kamanaboina — AI/ML · Full-Stack Software · Cybersecurity",
     description:
-      "Building intelligent systems, security-focused software and practical AI applications.",
+      "Student engineer pursuing B.Tech in CSE (AI & Data Science), building AI/ML applications, full-stack web applications, and security-focused software.",
   },
   robots: "index, follow",
 };

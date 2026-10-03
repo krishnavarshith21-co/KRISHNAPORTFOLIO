@@ -4,13 +4,13 @@ import ScrollReveal from "@/components/ScrollReveal";
 import { ParallaxLayer } from "@/components/ScrollParallax";
 
 const focusAreas = [
-  "Artificial Intelligence",
-  "Cybersecurity",
-  "Software Engineering",
-  "Computer Vision",
-  "LLM Applications",
-  "Backend Development",
+  "AI / ML Applications",
   "Full-Stack Development",
+  "Cybersecurity Systems",
+  "LLM Systems & RAG",
+  "API Development",
+  "Vector Search & Embeddings",
+  "Computer Vision",
 ];
 
 export default function About() {
@@ -36,17 +36,13 @@ export default function About() {
 
             <ScrollReveal delay={0.2} distance={20}>
               <p className="text-lg text-[var(--color-text-secondary)] leading-relaxed mb-8 max-w-2xl">
-                I&apos;m Krishna Varshith, a student engineer interested in
-                artificial intelligence, cybersecurity, software systems and
-                product development.
+                I&apos;m Krishna Varshith Kamanaboina, a student engineer pursuing B.Tech in Computer Science &amp; Engineering (AI &amp; Data Science), with hands-on experience building AI/ML applications, full-stack web applications, APIs, and security-focused software.
               </p>
             </ScrollReveal>
 
             <ScrollReveal delay={0.25} distance={20}>
               <p className="text-body max-w-2xl">
-                My work focuses on understanding difficult technical problems,
-                building working systems and continuously learning through
-                projects, hackathons and experimentation.
+                My work centers on solving practical engineering problems through AI, software development, web technologies, and cybersecurity — building working systems through projects, hackathons, and continuous experimentation.
               </p>
             </ScrollReveal>
           </div>
